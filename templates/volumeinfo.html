@@ -18,30 +18,33 @@ content %}
         </div>
 
 
-      <!-- Product Details -->
+      <!-- Book Details -->
       <div class="col-md-10 card-container">
-        <h1 class="h2 mb-3">{{book['title']}}</h1>
-        <div class="mb-3">
-        <a href="{{ url_for('search', query = book.author) }}">
-        <span class="h4 me-2"> {{ book["author"] }} </span>
-        </a>
-          
-        
-        {# <span class="badge bg-danger ms-2">25% OFF</span> #}
+        <h1 class="h2 mb-2">{{book['title']}}</h1>
+        <div class="mb-2 d-flex align-items-center">
+          <span class="text-muted me-2">Author: </span>
+          <form action="{{ url_for('search', page =1) }}" method="POST">
+            <input type="hidden" name="query" value="{{ book.author }}">
+            <button type="submit" class="btn btn-outline-primary btn-sm">
+              {{ book['author'] }}
+              <i class="fas fa-search"></i> 
+            </button>
+          </form>
+          <span class="text-muted mx-2">Publisher: </span>
+          <form action="{{ url_for('search', page =1) }}" method="POST">
+            <input type="hidden" name="query" value="{{ book.publisher }}">
+            <button type="submit" class="btn btn-outline-primary btn-sm">
+              {{ book.publisher }}
+              <i class="fas fa-search"></i> 
+            </button>
+          </form>
+        </div>
+        <span class="text-Muted mb-2">Released: {{ book['publishedDate'] }}</span>
         </div>
 
-        <div class="mb-3">
-            <span class="text-Muted"> Released: {{ book['publishedDate'] }}</span>
-            <br>
-            <span class="text-muted">Publisher: 
-            <a href="{{ url_for('search', query = book.publisher, page = 1) }}">
-            {{ book['publisher'] }}
-            </a>
-            </span>
-          </div>
-        </div>
-
-        
+        <h2 class = "h3 mb-2">
+        Synopsis:
+        </h2>
         <p class="mb-4">
           {{ book['description'] }}
         </p>
