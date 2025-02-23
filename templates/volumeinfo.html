@@ -1,0 +1,66 @@
+{% extends 'base.html' %} {% block title %}Select Movie{% endblock %} {% block
+content %}
+<div class="container">
+  <h1 class="heading">Book Info</h1>
+  <br />
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    rel="stylesheet"
+  />
+
+  <div class="container py-5">
+    <div class="row">
+      <!-- Product Images -->
+    
+        <div class="col-md-2 mb-4">
+            <img class="img-fluid" src=" {{ book['thumbnail'] }} " />
+
+        </div>
+
+
+      <!-- Product Details -->
+      <div class="col-md-10 card-container">
+        <h1 class="h2 mb-3">{{book['title']}}</h1>
+        <div class="mb-3">
+        <a href="{{ url_for('search', query = book.author, page = 1) }}">
+        <span class="h4 me-2"> {{ book["author"] }} </span>
+        </a>
+          
+        
+        {# <span class="badge bg-danger ms-2">25% OFF</span> #}
+        </div>
+
+        <div class="mb-3">
+            <span class="text-Muted"> Released: {{ book['publishedDate'] }}</span>
+            <br>
+            <span class="text-muted">Publisher: 
+            <a href="{{ url_for('search', query = book.publisher, page = 1) }}">
+            {{ book['publisher'] }}
+            </a>
+            </span>
+          </div>
+        </div>
+
+        
+        <p class="mb-4">
+          {{ book['description'] }}
+        </p>
+        
+        
+
+        <!-- Actions -->
+        <div class="d-grid gap-2">
+          <a class="btn btn-primary" href="#">Add to Library</a>
+          <a class="btn btn-outline-secondary"
+          href="https://nyaa.si/?f=0&c=3_1&q={{ book['searchTitle'] }}" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-download"></i> Search Torrents
+          </a>
+        </div>
+        <!-- Torrents -->
+
+        
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %} {% block title %}Select Movie{% endblock %} {% block
+content %}
+<div class="container">
+  <h1 class="heading">Search Book</h1>
+  <br />
+  <form action="{{ url_for('search', query = searchQuery, page=1) }}">
+    <div class="input-group mb-3">
+      <input
+        name="searchQuery"
+        type="text"
+        class="form-control pr-5"
+        style="padding-right: 1.5rem"
+        value="{{ query }}"
+      />
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="submit">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <br />
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col-2">Thumb</th>
+        <th scope="col-7">Title</th>
+        <th scope="col-2">Author</th>
+        <th scope="col-1">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in books %}
+      <tr>
+        <th scope="row" class="col-2">
+          <img
+            src="{{ book['volumeInfo']['imageLinks']['thumbnail'] }}"
+            alt=""
+            class="img-thumbnail"
+          />
+        </th>
+        <td class="col-7">
+          <a href="{{ url_for('volume_info', volume_id=book['id']) }}">
+            {{ book['volumeInfo']['title'] }}
+          </a>
+        </td>
+        <td class="col-2">{{ book['volumeInfo']['authors'][0] }}</td>
+        <td>
+          <div class="dropdown">
+            <button
+              class="btn btn-default dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Actions
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="#" class="dropdown-item">
+                  <i class="fas fa-info-circle"></i>
+                  View</a
+                >
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-plus-circle"></i>
+                  Add</a
+                >
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
