@@ -25,13 +25,17 @@ def volume_info(volume_id):
     # print(data)
     return render_template('volumeinfo.html', book=data)
 
-def search(query, page):
-    # print(f"Query:{query}")
-    page = int(request.args.get('page', page))
-    # print(f"Page:{page}")
-    data = apirequest.search_volume(query, page)
-    print(data)
-    return render_template('search.html', books=data['items'], page=page, query=query, pagination=data['pagination'])
+def search(page=1):
+    if request.method == 'POST':
+        query = request.form['query']
+        page = int(request.args.get('page', page))
+        data = apirequest.search_volume(query, page)  
+    return render_template('search.html',
+                        books=data['items'], 
+                        searchQuery=query, 
+                        pagination=data['pagination'], 
+                        page=page)
+
 
 def add():
     pass

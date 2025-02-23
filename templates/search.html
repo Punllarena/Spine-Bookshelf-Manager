@@ -1,22 +1,27 @@
 {% extends 'base.html' %} {% block title %}Select Movie{% endblock %} {% block
 content %}
 <div class="container">
-  <h1 class="heading">Search Book</h1>
+  <h1 class="heading">Searcing For: {{ searchQuery }}</h1>
   <br />
-  <form action="{{ url_for('search', query = searchQuery, page=1) }}">
-    <div class="input-group mb-3">
-      <input
-        name="searchQuery"
-        type="text"
-        class="form-control pr-5"
-        style="padding-right: 1.5rem"
-        value="{{ query }}"
-      />
-      <div class="input-group-append">
-        <button class="btn btn-primary" type="submit">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  <form action="{{ url_for('search') }}"
+  method="POST">
+    <div class="search-bar">
+        <div class="input-group">
+            <input 
+            value="{{ searchQuery }}"
+            name="query"
+            type="text" 
+            class="form-control" 
+            placeholder="Search..." 
+            aria-label="Search" 
+            aria-describedby="search-addon">
+            <button class="btn btn-outline-secondary" 
+            type="submit" id="search-addon">
+                    <i class="fas fa-search"></i>
+            </button>
+        </div>
     </div>
   </form>
 
@@ -40,39 +45,42 @@ content %}
             class="img-thumbnail"
           />
         </th>
-        <td class="col-7">
+        <td class="col-6">
           <a href="{{ url_for('volume_info', volume_id=book['id']) }}">
             {{ book['volumeInfo']['title'] }}
           </a>
         </td>
-        <td class="col-2">{{ book['volumeInfo']['authors'][0] }}</td>
-        <td>
-          <div class="dropdown">
-            <button
-              class="btn btn-default dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Actions
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="#" class="dropdown-item">
-                  <i class="fas fa-info-circle"></i>
-                  View</a
-                >
-                <a class="dropdown-item" href="#">
+        <td class="col-2">{% for author in book['volumeInfo']['authors']  %}
+        <p>
+        {{ author }}
+        </p>
+        {% endfor %}</td>
+        <td class="col-1">
+          <a class="btn btn-primary" href="#">
                   <i class="fas fa-plus-circle"></i>
-                  Add</a
+                  Add To Library</a
                 >
-              </li>
-            </ul>
-          </div>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+  <nav>
+    <div class="d-flex justify-content-between">
+      <form action="{{ url_for('search', page = page-1) }}" method="POST">
+        <input type="hidden" name="query" value="{{ searchQuery }}">
+        {% if page == 1 %}
+          <button class="btn btn-secondary" disabled>&laquo; Previous</button>
+        {% else %}
+          <button class="btn btn-info" type="submit">&laquo; Previous</button>
+        {% endif %}
+      </form>
+      <span>Page: {{page}}</span>
+      <form action="{{ url_for('search', page = page+1) }}" method="POST">
+        <input type="hidden" name="query" value="{{ searchQuery }}">
+        <button class="btn btn-primary" type="submit">Next &raquo;</button>
+      </form>
+    </div>
+  </nav>
 </div>
 {% endblock %}

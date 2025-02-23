@@ -22,8 +22,7 @@ params = {
 search_url = f"https://www.googleapis.com/books/v1/volumes"
 
 
-def next_page():
-    pass
+
 
 def search_volume(query, page=1):
     params['q'] = query

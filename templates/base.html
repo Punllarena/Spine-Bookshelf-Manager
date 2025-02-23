@@ -58,8 +58,12 @@
             </li>
             
           </ul>
-          <form class="d-flex" role="search">
+          <form class="d-flex" 
+          role="search" 
+          action="{{ url_for('search') }}"
+          method="POST">
             <input class="form-control me-2" 
+            name="query"
             type="search" 
             placeholder="Search..." 
             aria-label="Search">
