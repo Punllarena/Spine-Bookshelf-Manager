@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %}Select Movie{% endblock %} {% block
+{% extends 'base.html' %} {% block title %}{{book['title']}}{% endblock %} {% block
 content %}
 <div class="container">
   <h1 class="heading">Book Info</h1>
@@ -13,7 +13,9 @@ content %}
       <!-- Product Images -->
     
         <div class="col-md-2 mb-4">
-            <img class="img-fluid" src=" {{ book['thumbnail'] }} " />
+            <a href="{{ book['largeImage'] }}" target="_blank">
+            <img class="img-fluid" src=" {{ book['thumbnail'] }} " alt="Click Image for Large Cover"/>
+            </a>
 
         </div>
 
@@ -39,8 +41,24 @@ content %}
             </button>
           </form>
         </div>
-        <span class="text-Muted mb-2">Released: {{ book['publishedDate'] }}</span>
-        </div>
+        <span class="text-muted mb-2">Released: {{ book['publishedDate'] }}</span>
+        <br>
+        {% if book['ISBN10'] %}
+        
+        <span class="text-muted mb-2">ISBN 10: 
+        <a href="https://isbnsearch.org/isbn/{{ book['ISBN10'] }}" target="_blank">
+        {{ book['ISBN10'] }}</a></span>
+        
+        {% endif %}
+        {% if book.ISBN13 %}
+        <span class="text-muted mb-2">ISBN 13: 
+        <a href="https://isbnsearch.org/isbn/{{ book.ISBN13 }}" target="_blank">
+        {{ book['ISBN13'] }}
+        </a></span>
+        
+        {% endif %}
+        
+      </div>
 
         <h2 class = "h3 mb-2">
         Synopsis:
@@ -53,7 +71,7 @@ content %}
 
         <!-- Actions -->
         <div class="d-grid gap-2">
-          <a class="btn btn-primary" href="#">Add to Library</a>
+          <a class="btn btn-primary" href="{{ url_for('add', volume_id=book.volume_id) }}">Add to Library</a>
           <a class="btn btn-outline-secondary"
           href="https://nyaa.si/?f=0&c=3_1&q={{ book['searchTitle'] }}" target="_blank" rel="noopener noreferrer">
             <i class="fas fa-download"></i> Search Torrents
