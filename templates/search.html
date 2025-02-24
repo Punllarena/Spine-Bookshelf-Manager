@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %}Select Movie{% endblock %} {% block
+{% extends 'base.html' %} {% block title %}Searching for {{ searchQuery }}{% endblock %} {% block
 content %}
 <div class="container">
   <h1 class="heading">Searcing For: {{ searchQuery }}</h1>
@@ -26,10 +26,10 @@ content %}
   </form>
 
   <br />
+  {% if books is iterable %}
   <table class="table table-hover">
     <thead>
       <tr>
-        <th scope="col-2">Thumb</th>
         <th scope="col-7">Title</th>
         <th scope="col-2">Author</th>
         <th scope="col-1">Actions</th>
@@ -46,7 +46,8 @@ content %}
           />
         </th>
         <td class="col-6">
-          <a href="{{ url_for('volume_info', volume_id=book['id']) }}">
+          <a href="{{ url_for('volume_info', volume_id=book['id']) }}"
+          "{{ url_for('add', volume_id=book['id']) }}">
             {{ book['volumeInfo']['title'] }}
           </a>
         </td>
@@ -56,7 +57,7 @@ content %}
         </p>
         {% endfor %}</td>
         <td class="col-1">
-          <a class="btn btn-primary" href="#">
+          <a class="btn btn-primary" href="{{ url_for('add', volume_id=book.id) }}" target="_blank">
                   <i class="fas fa-plus-circle"></i>
                   Add To Library</a
                 >
@@ -72,15 +73,30 @@ content %}
         {% if page == 1 %}
           <button class="btn btn-secondary" disabled>&laquo; Previous</button>
         {% else %}
-          <button class="btn btn-info" type="submit">&laquo; Previous</button>
+          <button class="btn btn-primary" type="submit">&laquo; Previous</button>
         {% endif %}
       </form>
-      <span>Page: {{page}}</span>
+      <span>Page: {{page}} of {{pagination}}</span>
+      
       <form action="{{ url_for('search', page = page+1) }}" method="POST">
         <input type="hidden" name="query" value="{{ searchQuery }}">
-        <button class="btn btn-primary" type="submit">Next &raquo;</button>
+        {% if page == pagination %}
+        <button class="btn btn-secondary" type="submit"disabled>Next &raquo;</button>
+        {% else %}
+        <button class="btn btn-primary" type="submit" >Next &raquo;</button>
+        {% endif %}
       </form>
     </div>
+
+    
   </nav>
+  
+  {% else %}
+  <h1 class="h2 heading">
+  No Results
+  </h1>
+  {% endif %}
+  
+  
 </div>
 {% endblock %}
