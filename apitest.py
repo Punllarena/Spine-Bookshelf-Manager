@@ -8,7 +8,7 @@ load_dotenv()
 api_key = os.getenv('BOOKS_API_KEY')
 
 # Define the query and pagination parameters
-query = 'Chillin\' in Another World'
+query = 'Chillin\' in Another World with Level 2 Super Cheat Powers'
 volume_id = "RkI3EAAAQBAJ"
 startIndex = 9 # Starts at 0, counts each item in the list
 maxResults = 10
@@ -27,15 +27,16 @@ volume_url = f"https://www.googleapis.com/books/v1/volumes/{volume_id}"
 
 # Send the request to Google Books API
 response = requests.get(search_url, params = params)
-response = requests.get(volume_url)
+# response = requests.get(volume_url)
 # response.raise_for_status()
 
 # Check if the request was successful
 if response.status_code == 200:
     data = response.json()
-    seriesInfo = data['volumeInfo']['seriesInfo']['volumeSeries'][0]['seriesId']
-    print(seriesInfo)
-    # print(data)
+    print(data)
+    
+    # seriesInfo = data['volumeInfo']['seriesInfo']['volumeSeries'][0]['seriesId']
+    # print(seriesInfo)
     # print(data['volumeInfo']['seriesInfo']['volumeSeries'][0]['seriesId'])
     # for item in data['items']:
     #     print(item['volumeInfo']['title'])
