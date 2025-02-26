@@ -15,7 +15,8 @@ params = {
     "key": api_key,
     "startIndex": startIndex,
     "maxResults": maxResults, 
-    "projection": "lite"
+    "projection": "lite", 
+    # "langRestrict": "en",
 }
 
 # Define your API key and base URL
