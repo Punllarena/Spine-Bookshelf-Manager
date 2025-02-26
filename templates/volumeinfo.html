@@ -22,7 +22,12 @@ content %}
 
       <!-- Book Details -->
       <div class="col-md-10 card-container">
-        <h1 class="h2 mb-2">{{book['title']}}</h1>
+        <h1 class="h2 mb-2">{{book['title']}} 
+        </h1>
+        <h5><span class="badge {{ data_db['reading_badge'] }}">{{ data_db['reading_status'] }}</span></h5>
+        <span class="text-muted mb-2">Read Time: 4 Hours 20 Minutes |</span>
+        <span class="text-muted mb-2">Started: 2025-02-20 |</span>
+        <span class="text-muted mb-2">Finished: 2025-02-21</span>
         <div class="mb-2 d-flex align-items-center">
           <span class="text-muted me-2">Author: </span>
           <form action="{{ url_for('search', page =1) }}" method="POST">
@@ -43,19 +48,9 @@ content %}
         </div>
         <span class="text-muted mb-2">Released: {{ book['publishedDate'] }}</span>
         <br>
-        {% if book['ISBN10'] %}
-        
-        <span class="text-muted mb-2">ISBN 10: 
-        <a href="https://isbnsearch.org/isbn/{{ book['ISBN10'] }}" target="_blank">
-        {{ book['ISBN10'] }}</a></span>
-        
-        {% endif %}
-        {% if book.ISBN13 %}
-        <span class="text-muted mb-2">ISBN 13: 
-        <a href="https://isbnsearch.org/isbn/{{ book.ISBN13 }}" target="_blank">
-        {{ book['ISBN13'] }}
-        </a></span>
-        
+        {% if data_db['series_id'] != "Is not a Series" %}
+        <a href="{{ url_for('view_series', series_id=data_db['series_id']) }}" 
+        class="btn btn-outline-primary btn-sm">View Series</a>
         {% endif %}
         
       </div>
@@ -71,10 +66,35 @@ content %}
 
         <!-- Actions -->
         <div class="d-grid gap-2">
-          <a class="btn btn-primary" href="{{ url_for('add', volume_id=book.volume_id) }}">Add to Library</a>
+          <div class="d-flex">
+            <a
+              class="btn btn-primary flex-grow-1"
+              href="{{ url_for('add', volume_id=book.volume_id, shelf = 'Currently Reading') }}"
+              target="_blank"
+            >
+              <i class="fas fa-plus-circle me-2"></i>
+              <span class="text-center">Currently Reading</span>
+            </a>
+            <a
+              class="btn btn-primary flex-grow-1"
+              href="{{ url_for('add', volume_id=book.volume_id, shelf = 'To Read') }}"
+              target="_blank"
+            >
+              <i class="fas fa-plus-circle me-2"></i>
+              <span class="text-center">To Read</span>
+            </a>
+            <a
+              class="btn btn-primary flex-grow-1"
+              href="{{ url_for('add', volume_id=book.volume_id, shelf = 'Completed') }}"
+              target="_blank"
+            >
+              <i class="fas fa-plus-circle me-2"></i>
+              <span class="text-center">Completed</span>
+            </a>
+          </div>
           <a class="btn btn-outline-secondary"
           href="https://nyaa.si/?f=0&c=3_1&q={{ book['searchTitle'] }}" target="_blank" rel="noopener noreferrer">
-            <i class="fas fa-download"></i> Search Torrents
+            <i class="fas fa-download"></i> Search Nyaa Torrents
           </a>
         </div>
         <!-- Torrents -->

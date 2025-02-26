@@ -1,60 +1,49 @@
-{% extends 'base.html' %} {% block title %}My Top 10 Movies{% endblock %} {%
+{% extends 'base.html' %} {% block title %}Spine Bookshelf{% endblock %} {%
 block content %}
-  
+
 <div class="container">
   <h1 class="heading">My Bookshelf</h1>
-  <p class="description">These are my all-time favourite movies.</p>
-
-  <div class="card-container">
-    {% for n in range(10) %}
-    <div class="card">
-      <div
-        class="front"
-        style="
-          background-image: url('https://www.shortlist.com/media/images/2019/05/the-30-coolest-alternative-movie-posters-ever-2-1556670563-K61a-column-width-inline.jpg');
-        "
-      >
-        <p class="large">1</p>
-      </div>
-      <div class="back">
-        <div>
-          <div class="title">
-            Title <span class="release_date">(2011)</span>
-          </div>
-          <div>
-            <span>Author</span>
-          </div>
-          <div class="rating">
-            <label>10</label>
-            <i class="fas fa-star star"></i>
-          </div>
-          <p class="review">"Review Text"</p>
-          <p class="overview">
-            A mysterious Hollywood stuntman and mechanic moonlights as a getaway
-            driver and finds himself in trouble when he helps out his neighbor
-            in this action drama.
-          </p>
-          <p>
-            <a href="#" class="button">View Series</a>
-          </p>
-
-          <a href="#" class="button">Update</a>
-          <a href="#" class="button delete-button">Delete</a>
+  <p class="description">
+    These the series in the bookshelf. Non-Series will be Displayed Separately
+  </p>
+  
+    {% for key, books in books.items() %}
+    {% if books != [] %}
+    <h2 class="heading">{{ key }} Series</h2> 
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+      {% for book in books %}
+      <div class="col">
+      <div class="card h-100 shadow-sm">
+        <img src="{{ book.img_url }} " alt="{{ book.title }} Image" class="card-img-top" />
+        <div class="card-body">
+          <a href="{{url_for('volume_info', volume_id=book.g_volume_id)}}">
+            <h6 class="card-title">{{book.title}}</h6>
+          </a>
+          <p class="card-text">{{ book.author }}</p>
+          {# <p class="text-muted mb-0">{{book.reading_tag}}</p> #}
+          {% if book.series_id != "Is not a Series" %}
+          <a
+            class="btn btn-outline-primary"
+            href=" {{ url_for('view_series', series_id=book.series_id) }} "
+          >
+            View Series
+          </a>
+          {% endif %}
         </div>
       </div>
     </div>
     {% endfor %}
+    </div>
+    {% else %}
+    {% if key != "Currently Reading" %}
+    <h2 class="heading">No Series {{ key }}</h2>
+    {% else %}
+    <h2 class="heading">No books being Read</h2>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
   </div>
-  <style>
-    .card-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-  </style>
-</div>
-{# <div class="container text-center add">
-  <a href="#" class="button">Add Movie</a>
-</div> #}
+  
 
+</div>
 {% endblock %}
