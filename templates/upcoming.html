@@ -1,0 +1,79 @@
+{% extends 'base.html' %} {% block title %}Upcoming Titles - Spine Bookshelf{% endblock %} {%
+block content %}
+
+<div class="container">
+  <section id="top"></section>
+  <h1 class="heading">Upcoming Books</h1>
+  <p class="description">
+    These are the upcoming books taken from the <a href="https://yattatachi.com/">Yatta Tachi website</a>. Below are links to jump to when viewing
+  </p>
+    <ul>
+  {% for date, books in  books.items() %}
+    <li>
+    <a href="#{{ date }}">
+    <i class="fas fa-calendar"></i> {{ date }}
+    </a>
+    </li>
+    
+    {% endfor %}
+    </ul>
+  
+    {% for date, books in books.items() %}
+    {% if books != [] %}
+    <section id="{{ date }}"></section>
+    <h2 class="heading"><i class="fas fa-calendar"></i> {{ date }}</h2> <!--Dates-->
+    <h5>
+    <a href="#top">
+    <i class="fas fa-arrow-circle-up"></i>
+    Back to Top
+    </a>
+    </h5>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+      {% for book in books %}
+      <div class="col">
+      <div class="card h-100 shadow-sm">
+        <img src="{{ book['Image Link'] }} " alt="{{ book['title'] }} Image" class="card-img-top" />
+        <div class="card-body">
+          <h5 class="card-title">{{book['Title']}}</h5>
+          <h6 class="badge bg-secondary"> {{book['Type']}}</h6>
+          <p class="card-text">{{ book['Author'] }}</p>
+          <p class=""card-text>{{book['Company']}}</p>
+          {# <p class="text-muted mb-0">{{book.reading_tag}}</p> #}
+          <a href="https://nyaa.si/?f=0&c=3_1&q={{ book['Clean Search Title'] }}"
+          class="btn btn-outline-primary mb-2"
+          target="_blank"
+          >Nyaa
+          <i class="fas fa-search"></i>
+          </a>
+          <form action="{{ url_for('search') }}" method="POST" target="_blank">
+            
+            <input
+              hidden
+              name="query"
+              value="{{ book['Title'] }}"
+            />
+            <button
+              class="btn btn-outline-primary"
+              type="submit"
+              id="search-addon"
+            >
+              Search Book <i class="fas fa-search"></i>
+            </button>
+              
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    </div>
+    {% else %}
+    
+    <h2 class="heading">Nothing Found</h2>
+    {% endif%}
+
+    {% endfor %}
+  </div>
+  
+
+</div>
+{% endblock %}

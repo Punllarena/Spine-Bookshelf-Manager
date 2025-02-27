@@ -75,7 +75,7 @@ endblock %} {% block content %}
             <ul class="dropdown-menu">
               <li>
                 <a
-                  class="btn btn-primary d-flex justify-content-center"
+                  class="btn btn-outline-primary d-flex justify-content-center"
                   href="{{ url_for('add', volume_id=book.id, shelf = 'Currently Reading') }}"
                   target="_blank"
                 >
@@ -85,7 +85,7 @@ endblock %} {% block content %}
               </li>
               <li>
                 <a
-                  class="btn btn-primary d-flex justify-content-center"
+                  class="btn btn-outline-primary d-flex justify-content-center"
                   href="{{ url_for('add', volume_id=book.id, shelf = 'To Read') }}"
                   target="_blank"
                 >
@@ -95,7 +95,7 @@ endblock %} {% block content %}
               </li>
               <li>
                 <a
-                  class="btn btn-primary d-flex justify-content-center"
+                  class="btn btn-outline-primary d-flex justify-content-center"
                   href="{{ url_for('add', volume_id=book.id, shelf = 'Completed') }}"
                   target="_blank"
                 >
@@ -124,7 +124,7 @@ endblock %} {% block content %}
 
       <form action="{{ url_for('search', page = page+1) }}" method="POST">
         <input type="hidden" name="query" value="{{ searchQuery }}" />
-        {% if page == pagination %}
+        {% if page == pagination or pagination==0 %}
         <button class="btn btn-secondary" type="submit" disabled>
           Next &raquo;
         </button>

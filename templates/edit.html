@@ -1,8 +1,192 @@
 {% extends 'base.html' %} {% from 'bootstrap5/form.html' import render_form %}
-{% block title %}Edit Movies{% endblock %} {% block content %}
-<div class="content">
-  <h1 class="heading">Movie Title</h1>
-  <p class="description">Edit Movie Rating</p>
-  {{ render_form(form, novalidate=True) }}
+{% block title %}Edit Book - Spine Bookshelf{% endblock %} {% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-md-12 col-sm-12">
+      <div class="card shadow-lg">
+        <div class="card-body">
+          <h3 class="mb-4 heading">Editing</h3>
+          <form
+            id="editForm"
+            action="{{ url_for('edit', volume_id=book.g_volume_id) }}"
+            method="POST"
+          >
+            <!-- Book Information -->
+            <div class="mb-3">
+              <label for="title" class="form-label">Title</label>
+              <input
+                type="text"
+                class="form-control"
+                name="title"
+                value="{{book.title}}"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="author" class="form-label">Author</label>
+              <input
+                type="text"
+                class="form-control"
+                name="author"
+                value=" {{ book.author }} "
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="title" class="form-label">Series ID</label>
+              <input
+                type="text"
+                class="form-control"
+                name="series_id"
+                value="{{book.series_id}}"
+                placeholder="If Not a Series, write 'Is not a Series'"
+                required
+              />
+              <div class="form-text">
+                You can check the series in the Series Viewer, Click 'View
+                Series' when opening a book
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="title" class="form-label">Series Volume Index</label>
+              <input
+                type="number"
+                class="form-control"
+                name="series_index"
+                value="{{book.series_index}}"
+                placeholder="Write 0 if not a Series"
+                required
+              />
+              <div class="form-text"></div>
+            </div>
+            <div class="mb-3">
+              <label for="title" class="form-label">Reading Status</label>
+              <div class="form-check">
+                <input type="radio" class="form-check-input" name="reading_tag"
+                id="currentlyReading" value="Currently Reading" {% if
+                book.reading_tag == 'Currently Reading' %} checked {% endif %}
+                required />
+                <label class="form-check-label" for="currentlyReading"
+                  >Currently Reading</label
+                >
+              </div>
+              <div class="form-check">
+                <input type="radio" class="form-check-input" name="reading_tag"
+                id="toRead" value="To Read" {% if book.reading_tag == 'To Read'
+                %} checked {% endif %} required />
+                <label class="form-check-label" for="toRead">To Read</label>
+              </div>
+              <div class="form-check">
+                <input type="radio" class="form-check-input" name="reading_tag"
+                id="completed" value="Completed" {% if book.reading_tag ==
+                'Completed' %} checked {% endif %} required />
+                <label class="form-check-label" for="completed"
+                  >Completed</label
+                >
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="release" class="form-label">Release Date</label>
+              <input
+                type="date"
+                class="form-control"
+                id="dob"
+                value="{{ book.release_date }}"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="desc" class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                name="description"
+                rows="5"
+                placeholder="Write down the book synopsis"
+                required
+              >
+{{book.description}}
+            </textarea
+              >
+            </div>
+            <div class="mb-3">
+              <label for="rating" class="form-label">Rating</label>
+              <input
+                type="number"
+                class="form-control"
+                min="0"
+                max="10"
+                name="rating"
+                value="{{book.rating}}"
+                placeholder="Your Rating"
+              />
+              <div class="form-text"></div>
+            </div>
+            <div class="mb-3">
+              <label for="review" class="form-label">Review</label>
+              <textarea
+                class="form-control"
+                name="review"
+                rows="5"
+                placeholder="Write down your review"
+              >
+{{ book.review }}
+            </textarea
+              >
+            </div>
+            <div class="mb-3">
+              <label for="start_date" class="form-label">Start Date</label>
+              <input
+                type="date"
+                class="form-control"
+                name="start_date"
+                value="{{ book.start_date }}"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="finish_date" class="form-label">Finish Date</label>
+              <input
+                type="date"
+                class="form-control"
+                name="finish_date"
+                value="{{ book.finish_date }}"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="hour" class="form-label">Hours Read</label>
+              <input
+                type="number"
+                class="form-control"
+                min="0"
+                name="hour_read"
+                value="{{book.hour_read}}"
+                placeholder="Your hours read"
+              />
+              <div class="form-text"></div>
+            </div>
+            <div class="mb-3">
+              <label for="minutes" class="form-label">Minutes Read</label>
+              <input
+                type="number"
+                class="form-control"
+                min="0"
+                max="59"
+                name="minutes_read"
+                value="{{book.minutes_read}}"
+                placeholder="Your minutes read"
+              />
+              <div class="form-text"></div>
+            </div>
+            <!-- Submit Button -->
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary btn-lg">
+                Submit
+              </button>
+              <div id="formFeedback" class="mt-3"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
