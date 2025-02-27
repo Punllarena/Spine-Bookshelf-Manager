@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Float, Boolean, Text, DateTime
+from sqlalchemy import Integer, String, Float, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from flask_sqlalchemy import SQLAlchemy
@@ -64,13 +64,13 @@ class Book(Base):
     # isSeries: Mapped[bool] = mapped_column(Boolean, nullable=True)
     release_date: Mapped[str] = mapped_column(String(250), nullable=True)
     description: Mapped[str] = mapped_column(Text, nullable=True)
-    rating: Mapped[float] = mapped_column(Float, nullable=True)
+    rating: Mapped[int] = mapped_column(Integer, nullable=True)
     # ranking: Mapped[int] = mapped_column(Integer, nullable=True)
     review: Mapped[str] = mapped_column(String(250), nullable=True)
     img_url: Mapped[str] = mapped_column(String(250), nullable=False)
     g_volume_id: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    start_date: Mapped[DateTime] = mapped_column(DateTime, nullable=True)
-    finish_time: Mapped[DateTime] = mapped_column(DateTime, nullable=True)
+    start_date: Mapped[str] = mapped_column(String(10), nullable=True)
+    finish_date: Mapped[str] = mapped_column(String(10), nullable=True)
     hour_read: Mapped[int] = mapped_column(Integer, nullable=True)
     minutes_read: Mapped[int] = mapped_column(Integer, nullable=True)
     

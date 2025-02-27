@@ -5,7 +5,9 @@ def clean_for_search_title(title):
         ":": "",
         ",": "",
         ".": "",
-        "-": "  ",
+        "-": " ",
+        "?":"",
+        "!":"",
         "(volume)": "",
         "Volume": "",
         "volume": "",
@@ -14,7 +16,14 @@ def clean_for_search_title(title):
         "act": "",
         "(manga)": "", 
         "manga": "",
+        "Manga": "",
         "(light novel)": "",
+        "Light Novel":"",
+        "(":"",
+        ")":"",
+        "()":"",
+        "Hardcover":"",
+        " ":"+",
     }
     for old, new in replacements.items():
         title = title.replace(old, new)

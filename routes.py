@@ -1,17 +1,32 @@
-from flask import redirect, url_for, request, render_template
-# from models import Movie
-from forms import editMovieForm, searchMovieForm
+from flask import request, render_template, redirect, url_for
+# from forms import editMovieForm, searchMovieForm
 import apirequest
 from utils import clean_for_search_title, get_clean_description
 from models import Book, db
+from yattaUpcoming import run_scraper
 import sqlalchemy
 
 
-def edit():
-    pass
+def edit(volume_id):
+    book_in_db = db.session.query(Book).filter_by(g_volume_id=volume_id).first()
+    if request.method == 'POST':
+        response = request.form.to_dict()
+        if book_in_db:
+            for key, value in response.items():
+                setattr(book_in_db, key, value)
+            db.session.commit()            
+        return redirect(url_for('volume_info', volume_id = volume_id))
+    elif book_in_db:
+        return render_template('edit.html', book=book_in_db)
+    else:
+        return render_template('404.html'), 404
 
-def delete():
-    pass
+def delete(volume_id):
+    book_in_db = db.session.query(Book).filter_by(g_volume_id=volume_id).first()
+    if book_in_db:
+        db.session.delete(book_in_db)
+        db.session.commit()
+    return redirect(url_for('volume_info', volume_id = volume_id))
 
 def get_volume_info(volume_id):
     response = apirequest.get_volume(volume_id)
@@ -23,6 +38,14 @@ def get_volume_info(volume_id):
     except KeyError:
         imageLargeLink = response['volumeInfo'].get('imageLinks', 'https://placehold.co/800x1200')
         thumbnail = response['volumeInfo'].get('imageLinks', 'https://placehold.co/139x203')
+    if isinstance(thumbnail, str):
+        thumbnail = thumbnail
+    elif isinstance(thumbnail, dict):
+        thumbnail = list(thumbnail.values())[-1]
+    if isinstance(imageLargeLink, str):
+        imageLargeLink = imageLargeLink
+    elif isinstance(imageLargeLink, dict):
+        imageLargeLink = list(imageLargeLink.values())[-1]
 
     data = {
         "volume_id": volume_id,
@@ -57,10 +80,18 @@ def volume_info(volume_id):
         data_db['series_id'] = book_in_db.series_id
         data_db['reading_status'] = book_in_db.reading_tag
         data_db['reading_badge'] = get_reading_badge(data_db['reading_status'])
+        data_db['hour_read'] = book_in_db.hour_read
+        data_db['minutes_read'] = book_in_db.minutes_read
+        data_db['start_date'] = book_in_db.start_date
+        data_db['finish_date'] = book_in_db.finish_date
     else:
         data_db['reading_status'] = "Not In Library"
         data_db['reading_badge'] = "bg-secondary"
         data_db['series_id'] = "Is not a Series"
+        data_db['hour_read'] = "No Data"
+        data_db['minutes_read'] = "No Data"
+        data_db['start_date'] = "No Data"
+        data_db['finish_date'] = "No Data"
     
     return render_template('volumeinfo.html', book=data, data_db=data_db)
 
@@ -88,10 +119,10 @@ def add(volume_id: str, shelf:str):
     data = get_volume_info(volume_id)
     # Create a new Book instance with the provided data
     # print(data)
-    print(shelf)
+    # print(shelf)
     tags = ["To Read", "Currently Reading", "Completed"]
     if shelf not in tags:
-        shelf = "Untagged"
+        shelf = "To Read"
     
     new_book = Book(
         title=data['title'],
@@ -111,18 +142,13 @@ def add(volume_id: str, shelf:str):
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
         db.session.rollback()
-    return '''
-    <script>
-    window.close();
-    </script>
-    '''
+    return redirect(url_for('volume_info', volume_id=volume_id))
 
 
-def guide():
-    return render_template('temp.html')
 
 def upcoming():
-    return render_template('temp.html')
+    upcoming_books = run_scraper()
+    return render_template('upcoming.html', books=upcoming_books)
 def home():
     
     # Get the minimum and maximum series index for each series ID
