@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {% block title %}Spine Bookshelf{% endblock %} {%
+block content %}
+
+<div class="container">
+  <h1 class="heading">The Entire Bookshelf</h1>
+  <p class="description">These are all the books in the bookshelf</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col-2">Thumbnail</th>
+        <th scope="col-6">Title</th>
+        <th scope="col-2">Author</th>
+        <th scope="col-2">Reading Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in books %}
+      <tr>
+        <th scope="col-2">
+          <img src="{{book.img_url}}" alt="book.title" />
+        </th>
+        <td scope="col-6">
+          <a
+            href="{{ url_for('volume_info', volume_id=book.g_volume_id) }}"
+            class="mb-2"
+          >
+            {{book.title}}
+          </a>
+          <br />
+          {% if book.series_id != "Is not a Series" %}
+          <a
+            href="{{ url_for('view_series', series_id=book.series_id) }}"
+            class="btn btn-outline-primary mt-2"
+          >
+            View Series
+          </a>
+          {% endif %}
+        </td>
+        <td scope="col-2">{{book.author}}</td>
+        <td scope="col-2">{{book.reading_tag}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

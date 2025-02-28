@@ -1,12 +1,13 @@
-{% extends 'base.html' %} {% block title %}Upcoming Titles - Spine Bookshelf{% endblock %} {%
+{% extends 'base.html' %} {% block title %}Upcoming Light Novels - Spine Bookshelf{% endblock %} {%
 block content %}
 
 <div class="container">
   <section id="top"></section>
-  <h1 class="heading">Upcoming Books</h1>
+  <h1 class="heading">Upcoming Light Novels</h1>
   <p class="description">
-    These are the upcoming books taken from the <a href="https://yattatachi.com/">Yatta Tachi website</a>. Below are links to jump to when viewing
+    These are the upcoming books taken from the <a href="https://yattatachi.com/">Yatta Tachi website</a>. <br> Only showing the Light Novels. If you want the Manga, click the link above.
   </p>
+  <p>Below are links to jump to when viewing</p>
     <ul>
   {% for date, books in  books.items() %}
     <li>
@@ -22,12 +23,6 @@ block content %}
     {% if books != [] %}
     <section id="{{ date }}"></section>
     <h2 class="heading"><i class="fas fa-calendar"></i> {{ date }}</h2> <!--Dates-->
-    <h5>
-    <a href="#top">
-    <i class="fas fa-arrow-circle-up"></i>
-    Back to Top
-    </a>
-    </h5>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
       {% for book in books %}
       <div class="col">
@@ -63,9 +58,19 @@ block content %}
           </form>
         </div>
       </div>
+
     </div>
     {% endfor %}
     </div>
+    <div class="d-flex justify-content-center">
+    <h5>
+    <a href="#top" class="btn btn-outline-primary">
+    <i class="fas fa-arrow-circle-up"></i>
+    Back to Top
+    </a>
+      
+    </h5>
+  </div>
     {% else %}
     
     <h2 class="heading">Nothing Found</h2>

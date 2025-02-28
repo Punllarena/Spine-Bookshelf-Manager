@@ -4,12 +4,13 @@ block content %}
 <div class="container">
   <h1 class="heading">My Bookshelf</h1>
   <p class="description">
-    These the series in the bookshelf. Non-Series will be Displayed Separately
+    These are the series in the bookshelf. Non-Series will be Displayed Separately <br>
+    You can view the entire bookshelf <a href="{{ url_for('full_shelf') }}">here</a>
   </p>
   
     {% for key, books in books.items() %}
     {% if books != [] %}
-    <h2 class="heading">{{ key }} Series</h2> 
+    <h2 class="heading">{{ key }} Series or Books</h2> 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
       {% for book in books %}
       <div class="col">
@@ -26,7 +27,7 @@ block content %}
             class="btn btn-outline-primary"
             href=" {{ url_for('view_series', series_id=book.series_id) }} "
           >
-            View Series
+            View Books
           </a>
           {% endif %}
         </div>

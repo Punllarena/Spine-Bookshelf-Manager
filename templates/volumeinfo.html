@@ -29,6 +29,9 @@ block content %}
           <span class="badge {{ data_db['reading_badge'] }}">
             {{ data_db['reading_status'] }}
           </span>
+          {% if data_db['rating'] != None %}
+          <span class="text-muted">Rating: {{ data_db['rating'] }}</span>
+          {% endif %}
         </h5>
 
         {% if data_db['hour_read'] == "No Data" or data_db['minutes_read' == "No
@@ -85,7 +88,11 @@ block content %}
 
       <h2 class="heading mb-2">Synopsis:</h2>
       <p class="mb-4">{{ book['description'] }}</p>
-
+      {% if data_db['reading_status'] != "Not In Library" and data_db['review']
+      != None %}
+      <h2 class="heading mb-2">Review:</h2>
+      <p class="mb-4">{{ data_db['review'] }}</p>
+      {% endif %}
       <!-- Actions -->
       <h5 class="heading">Actions</h5>
       <div class="d-grid gap-2">
