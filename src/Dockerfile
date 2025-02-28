@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Create the instance directory
-VOLUME /src/instance
+VOLUME /app/instance
 
 # Expose the port that your application will use
 EXPOSE 5000
