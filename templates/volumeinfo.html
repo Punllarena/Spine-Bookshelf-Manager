@@ -29,7 +29,7 @@ block content %}
           <span class="badge {{ data_db['reading_badge'] }}">
             {{ data_db['reading_status'] }}
           </span>
-          {% if data_db['rating'] != None%}
+          {% if data_db['rating'] != None and data_db['rating'] != "None" %}
           <span class="text-muted">Rating: {{ data_db['rating'] }}</span>
           {% endif %}
         </h5>
