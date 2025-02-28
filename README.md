@@ -17,7 +17,7 @@ install dependencies
 pip install -r requirements.txt
 ```
 
-Provide the API key in the `.env` file, it uses Google Books API
+<!-- Provide the API key in the `.env` file, it uses Google Books API -->
 
 Run the application
 
