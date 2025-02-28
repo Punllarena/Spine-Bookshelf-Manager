@@ -1,0 +1,23 @@
+# Use the official Python 3.11 image as the base
+FROM python:3.11
+
+# Set the working directory to /src
+WORKDIR /src
+
+# Copy the requirements file into the container
+COPY requirements.txt .
+
+# Install the dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the application code into the container
+COPY . .
+
+# Create the instance directory
+VOLUME /src/instance
+
+# Expose the port that your application will use
+EXPOSE 5000
+
+# Run the command to start the application when the container launches
+CMD ["python", "main.py"]
