@@ -107,6 +107,8 @@ def view_series(series_id):
 def search(page=1):
     if request.method == 'POST':
         query = request.form['query']
+        if not query:
+            query = "Book Spine"
         page = int(request.args.get('page', page))
         data = apirequest.search_volume(query, page)
         try: 
@@ -164,8 +166,8 @@ def upcoming():
         db.session.commit()
     return render_template('upcoming.html', books=upcoming_books)
 
-def full_shelf():
-    query = db.session.query(Book).order_by(Book.series_id, Book.series_index).all()
+def full_shelf(page_num):
+    query = db.session.query(Book).order_by(Book.series_id, Book.series_index).paginate(per_page = 20 ,page = page_num, error_out = True)
     return render_template('fullshelf.html', books=query)
 
 def home():
@@ -179,12 +181,18 @@ def home():
     
     reading_books = db.session.query(Book).filter(Book.reading_tag == "Currently Reading").all()
     
-    to_read_books = db.session.query(Book).join(subquery, 
-                                                (Book.series_id == subquery.c.series_id) & (Book.series_index == subquery.c.min_index)
-                                    ).filter(Book.reading_tag == "To Read").all()
-    completed_books = db.session.query(Book).join(subquery, 
-                                                  (Book.series_id == subquery.c.series_id) & (Book.series_index == subquery.c.max_index)
-                                      ).filter(Book.reading_tag == "Completed").all()
+    to_read_books = db.session.query(Book).outerjoin(subquery, 
+                                                    (Book.series_id == subquery.c.series_id) & (Book.series_index == subquery.c.min_index)
+                                        ).filter(
+                                            (subquery.c.min_index == None) | 
+                                            (Book.series_index == subquery.c.min_index)
+                                        ).filter(Book.reading_tag == "To Read").all()
+    completed_books = db.session.query(Book).outerjoin(subquery, 
+                                                      (Book.series_id == subquery.c.series_id) & (Book.series_index == subquery.c.max_index)
+                                          ).filter(
+                                              (subquery.c.max_index == None) | 
+                                              (Book.series_index == subquery.c.max_index)
+                                          ).filter(Book.reading_tag == "Completed").all()
     
     all_books = {"Currently Reading": reading_books, "To read": to_read_books, "Completed": completed_books}
     return render_template('index.html', books = all_books)

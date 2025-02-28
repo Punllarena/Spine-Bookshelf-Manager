@@ -21,7 +21,7 @@ with app.app_context():
     db.create_all()
 
 # # Register routes
-app.add_url_rule('/full_shelf', view_func=full_shelf)
+app.add_url_rule('/full_shelf/<int:page_num>', view_func=full_shelf)
 app.add_url_rule('/edit/<string:volume_id>', view_func=edit, methods=['GET', 'POST'])
 app.add_url_rule('/delete/<string:volume_id>', view_func=delete)
 app.add_url_rule('/volumeInfo/<string:volume_id>', view_func=volume_info)

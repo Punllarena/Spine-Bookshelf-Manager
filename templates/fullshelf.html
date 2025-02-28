@@ -14,7 +14,7 @@ block content %}
       </tr>
     </thead>
     <tbody>
-      {% for book in books %}
+      {% for book in books.items %}
       <tr>
         <th scope="col-2">
           <img src="{{book.img_url}}" alt="book.title" />
@@ -42,5 +42,45 @@ block content %}
       {% endfor %}
     </tbody>
   </table>
+  <ul class="pagination">
+    {% if books.has_prev %}
+    <li class="page-item">
+      <a
+        class="page-link"
+        href="{{ url_for('full_shelf', page_num=books.prev_num) }}"
+        >Previous</a
+      >
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+      <span class="page-link">Previous</span>
+      {% endif %}
+    </li>
+
+    {% for page in books.iter_pages(left_edge=3, right_edge=3) %} {% if page %}
+    <li class="page-item">
+      <a class="page-link" href="{{ url_for('full_shelf', page_num=page) }}"
+        >{{ page }}</a
+      >
+    </li>
+    {% else %}
+    <li class="page-item disabled" id="example_ellipsis">
+      <a href="#" class="page-link">…</a>
+    </li>
+    {% endif %} {% endfor %} {% if books.has_next %}
+    <li class="page-item">
+      <a
+        class="page-link"
+        href="{{ url_for('full_shelf', page_num=books.next_num) }}"
+        >Next</a
+      >
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+      <span class="page-link">Next</span>
+      {% endif %}
+    </li>
+  </ul>
 </div>
+
 {% endblock %}

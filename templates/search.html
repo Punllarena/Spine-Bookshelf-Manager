@@ -1,6 +1,9 @@
 {% extends 'base.html' %} {% block title %}Searching for {{ searchQuery }}{%
 endblock %} {% block content %}
 <div class="container">
+  {% if searchQuery == "Book Spine" %}
+  <h1 class="heading">This is not an easter egg. It's a Duct Tape Bugfix</h1>
+  {% endif %}
   <h1 class="heading">Searcing For: {{ searchQuery }}</h1>
   <br />
   <link
