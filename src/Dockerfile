@@ -1,5 +1,5 @@
-# Use the official Python 3.12 image as the base
-FROM python:3.12
+# use a smaller base image
+FROM python:3.12-alpine
 
 # Set the working directory to /app
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install the dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Copy the application code into the container
 COPY . .
