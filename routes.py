@@ -170,6 +170,12 @@ def full_shelf(page_num):
     query = db.session.query(Book).order_by(Book.series_id, Book.series_index).paginate(per_page = 20 ,page = page_num, error_out = True)
     return render_template('fullshelf.html', books=query)
 
+def shelf(page_num, tag):
+    if tag not in ["To Read", "Currently Reading", "Completed"]:
+        tag = "To Read"
+    shelf = db.session.query(Book).filter(Book.reading_tag == tag).order_by(Book.series_id, Book.series_index).paginate(per_page = 20 ,page = page_num, error_out = True)
+    return render_template('shelf.html', books=shelf, tag=tag)
+
 def home():
     
     # Get the minimum and maximum series index for each series ID
@@ -186,13 +192,13 @@ def home():
                                         ).filter(
                                             (subquery.c.min_index == None) | 
                                             (Book.series_index == subquery.c.min_index)
-                                        ).filter(Book.reading_tag == "To Read").all()
+                                        ).filter(Book.reading_tag == "To Read").order_by(Book.id.desc()).limit(4).all()
     completed_books = db.session.query(Book).outerjoin(subquery, 
-                                                      (Book.series_id == subquery.c.series_id) & (Book.series_index == subquery.c.max_index)
-                                          ).filter(
-                                              (subquery.c.max_index == None) | 
-                                              (Book.series_index == subquery.c.max_index)
-                                          ).filter(Book.reading_tag == "Completed").all()
+                                                    (Book.series_id == subquery.c.series_id) & (Book.series_index == subquery.c.max_index)
+                                        ).filter(
+                                            (subquery.c.max_index == None) | 
+                                            (Book.series_index == subquery.c.max_index)
+                                        ).filter(Book.reading_tag == "Completed").order_by(Book.id.desc()).limit(4).all()
     
     all_books = {"Currently Reading": reading_books, "To read": to_read_books, "Completed": completed_books}
     return render_template('index.html', books = all_books)

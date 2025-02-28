@@ -10,7 +10,12 @@ block content %}
   
     {% for key, books in books.items() %}
     {% if books != [] %}
-    <h2 class="heading">{{ key }} Series or Books</h2> 
+    <section id="{{ key.lower().replace(' ', '') }}"></section>
+    <h2 class="heading">Latest in {{ key }}
+      <a href="{{ url_for('shelf', page_num = 1, tag = key) }}"
+      class="btn btn-outline-primary"
+      > See All</a>
+    </h2> 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
       {% for book in books %}
       <div class="col">
