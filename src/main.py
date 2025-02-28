@@ -40,4 +40,4 @@ app.add_url_rule('/', view_func=home)
 app.add_url_rule('/upcoming', view_func=upcoming)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5000)

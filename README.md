@@ -27,6 +27,14 @@ python app.py
 
 ## Dockerizing
 
+Change the `app.run` contents to the following
+
+```python
+app.run(host='0.0.0.0', port=5000)
+```
+
+This will allow the container to listen on all interfaces
+
 Build the docker image
 
 ```bash
