@@ -33,9 +33,8 @@ def clean_for_search(title:str)->str:
     """
 
     return title.translate(str.maketrans("","",":.()&,[]"))
-    
-def run_scraper():
-    
+
+def check_latest_post():
     try:
         print("[INFO] Opening Yatta Tachi Resources")
         request = requests.get(YATTA)
@@ -57,9 +56,14 @@ def run_scraper():
             print(f"[INFO] Title: {book_release_post}")
             print(f"[INFO] Link: {book_release_link}")
             break
+    return book_release_link
+    
+def run_scraper(book_release_link = check_latest_post()):
+    
+    # book_release_link = check_latest_post()
 
     try:
-        print(f"[INFO] Opening {book_release_post}: {book_release_link}")
+        print(f"[INFO] Opening {book_release_link}")
         request = requests.get(book_release_link)
         request.raise_for_status()  # Raises an error for bad responses
         content = request.content
@@ -102,7 +106,7 @@ def run_scraper():
             "Company": book_release_company,
             # "Link": book_release_link,
         }
-        if book_tag == "None" and "Irodori" not in book_release_company:
+        if book_tag == "None" and "Irodori" not in book_release_company and book_release_type == "Light Novel":
             if formatted_date not in book_info:
                 book_info[formatted_date] = []
             book_info[formatted_date].append(book_info_dict)

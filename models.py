@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Float, Text
+from sqlalchemy import Integer, String, JSON, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from flask_sqlalchemy import SQLAlchemy
@@ -26,33 +26,6 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 
 class Book(Base):
-    """
-    Model for a book.
-
-    This model represents a book in the database. A book has a title, an
-    author, a publisher, a series ID, and a series index. The series ID
-    and series index are optional.
-
-    Attributes:
-
-        id (int): The ID of the book. This is a unique identifier for the
-            book and is used to reference the book in other tables.
-
-        title (str): The title of the book. This is a required field and
-            must be unique.
-
-        author (str): The author of the book. This is an optional field.
-
-        publisher (str): The publisher of the book. This is an optional
-            field.
-
-        seriesID (str): The ID of the series the book belongs to. This is
-            an optional field.
-
-        seriesIndex (int): The index of the book in the series. This is an
-            optional field.
-
-    """
     __tablename__ = "books"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
     title: Mapped[str] = mapped_column(String(250))
@@ -74,3 +47,8 @@ class Book(Base):
     hour_read: Mapped[int] = mapped_column(Integer, nullable=True)
     minutes_read: Mapped[int] = mapped_column(Integer, nullable=True)
     
+class Upcoming(Base):
+    __tablename__ = "upcoming"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
+    release_link: Mapped[str] = mapped_column(String(250), nullable=False)
+    data_dict: Mapped[str] = mapped_column(JSON, nullable=False)

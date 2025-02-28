@@ -2,8 +2,8 @@ from flask import request, render_template, redirect, url_for
 # from forms import editMovieForm, searchMovieForm
 import apirequest
 from utils import clean_for_search_title, get_clean_description
-from models import Book, db
-from yattaUpcoming import run_scraper
+from models import Book, Upcoming, db
+from yattaUpcoming import run_scraper, check_latest_post
 import sqlalchemy
 
 
@@ -84,6 +84,8 @@ def volume_info(volume_id):
         data_db['minutes_read'] = book_in_db.minutes_read
         data_db['start_date'] = book_in_db.start_date
         data_db['finish_date'] = book_in_db.finish_date
+        data_db['rating'] = book_in_db.rating
+        data_db['review'] = book_in_db.review
     else:
         data_db['reading_status'] = "Not In Library"
         data_db['reading_badge'] = "bg-secondary"
@@ -92,6 +94,9 @@ def volume_info(volume_id):
         data_db['minutes_read'] = "No Data"
         data_db['start_date'] = "No Data"
         data_db['finish_date'] = "No Data"
+        data_db['rating'] = "None"
+        data_db['review'] = "None"
+        
     
     return render_template('volumeinfo.html', book=data, data_db=data_db)
 
@@ -147,8 +152,22 @@ def add(volume_id: str, shelf:str):
 
 
 def upcoming():
-    upcoming_books = run_scraper()
+    book_release_link = check_latest_post()
+    db_data = db.session.query(Upcoming).filter_by(release_link=book_release_link).first()
+    
+    if db_data:
+        upcoming_books = db_data.data_dict
+    else:
+        upcoming_books = run_scraper()
+        db.session.query(Upcoming).filter(Upcoming.release_link != book_release_link).delete(synchronize_session=False)
+        db.session.add(Upcoming(release_link=book_release_link, data_dict=upcoming_books))
+        db.session.commit()
     return render_template('upcoming.html', books=upcoming_books)
+
+def full_shelf():
+    query = db.session.query(Book).order_by(Book.series_id, Book.series_index).all()
+    return render_template('fullshelf.html', books=query)
+
 def home():
     
     # Get the minimum and maximum series index for each series ID

@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from models import db
-from routes import home, search, volume_info, upcoming, add, edit, delete, view_series
+from routes import home, search, volume_info, upcoming, add, edit, delete, view_series, full_shelf
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -21,6 +21,7 @@ with app.app_context():
     db.create_all()
 
 # # Register routes
+app.add_url_rule('/full_shelf', view_func=full_shelf)
 app.add_url_rule('/edit/<string:volume_id>', view_func=edit, methods=['GET', 'POST'])
 app.add_url_rule('/delete/<string:volume_id>', view_func=delete)
 app.add_url_rule('/volumeInfo/<string:volume_id>', view_func=volume_info)
