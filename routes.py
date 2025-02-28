@@ -141,7 +141,8 @@ def add(volume_id: str, shelf:str):
         description=data['description'],
         img_url=data['thumbnail'],  # Assuming 'thumbnail' holds the URL for the image
         reading_tag=shelf,
-        g_volume_id=volume_id
+        g_volume_id=volume_id,
+        review = "No Review Yet"
     )
     # Add the new book to the database session and commit
     try:
