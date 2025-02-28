@@ -1,6 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask
 from flask_bootstrap import Bootstrap5
-from flask_sqlalchemy import SQLAlchemy
+
 from models import db
 from routes import home, search, volume_info, upcoming, add, edit, delete, view_series, full_shelf, shelf
 import os
