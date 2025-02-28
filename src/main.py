@@ -3,10 +3,14 @@ from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from models import db
 from routes import home, search, volume_info, upcoming, add, edit, delete, view_series, full_shelf, shelf
+import os
+
+instance_path = os.path.join(os.path.dirname(__file__), 'instance')
+db_path = os.path.join(instance_path, 'bookshelf.db')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookshelf.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 Bootstrap5(app)
 
 

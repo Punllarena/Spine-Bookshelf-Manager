@@ -33,8 +33,22 @@ Build the docker image
 docker build -t spine-bookshelf-manager .
 ```
 
+To view the images
+
 ```bash
-docker run -d -p 5000:5000 spine-bookshelf-manager
+docker images
+```
+
+Create a Volume
+
+```bash
+docker volume create spine-bookshelf-manager
+```
+
+To run the container in the background with the volume attached
+
+```bash
+docker run -d -p 5000:5000 -v spine-bookshelf-manager:/src/instance --name spine-bookshelf-manager spine-bookshelf-manager 
 ```
 
 To view if the container is currently running
