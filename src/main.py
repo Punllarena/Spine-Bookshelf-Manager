@@ -6,6 +6,7 @@ from routes import home, search, volume_info, upcoming, add, edit, delete, view_
 import os
 
 instance_path = os.path.join(os.path.dirname(__file__), 'instance')
+os.makedirs(instance_path, exist_ok=True)  # Ensure the folder exists
 db_path = os.path.join(instance_path, 'bookshelf.db')
 
 app = Flask(__name__)
