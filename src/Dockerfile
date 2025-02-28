@@ -1,8 +1,8 @@
 # Use the official Python 3.12 image as the base
 FROM python:3.12
 
-# Set the working directory to /src
-WORKDIR /src
+# Set the working directory to /app
+WORKDIR /app
 
 # Copy the requirements file into the container
 COPY requirements.txt .
@@ -20,4 +20,4 @@ VOLUME /src/instance
 EXPOSE 5000
 
 # Run the command to start the application when the container launches
-CMD ["python", "main.py"]
+CMD ["python", "main.py", "--host=0.0.0.0", "--port=5000"]
