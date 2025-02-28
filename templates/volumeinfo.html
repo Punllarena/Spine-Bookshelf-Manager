@@ -94,8 +94,8 @@ block content %}
 
       <h2 class="heading mb-2">Synopsis:</h2>
       <p class="mb-4">{{ book['description'] }}</p>
-      {% if data_db['review'] == "" or data_db['review'] == "No Review Yet" %}
-      {% else %}
+      {% if data_db['review'] == "No Data" or data_db['review'] == "" or
+      data_db['review'] == "No Review Yet"%} {% else %}
       <h2 class="heading mb-2">Review:</h2>
       <p class="mb-4">{{ data_db['review'] }}</p>
       {% endif %}

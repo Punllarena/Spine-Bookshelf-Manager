@@ -94,8 +94,8 @@ def volume_info(volume_id):
         data_db['minutes_read'] = "No Data"
         data_db['start_date'] = "No Data"
         data_db['finish_date'] = "No Data"
-        data_db['rating'] = "None"
-        data_db['review'] = "None"
+        data_db['rating'] = "No Data"
+        data_db['review'] = "No Data"
         
     
     return render_template('volumeinfo.html', book=data, data_db=data_db)
@@ -142,7 +142,7 @@ def add(volume_id: str, shelf:str):
         img_url=data['thumbnail'],  # Assuming 'thumbnail' holds the URL for the image
         reading_tag=shelf,
         g_volume_id=volume_id,
-        review = "No Review Yet"
+        review = "No Data"
     )
     # Add the new book to the database session and commit
     try:
