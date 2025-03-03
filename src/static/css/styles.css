@@ -77,7 +77,7 @@ p.overview {
   margin: 1rem auto;
   position: relative;
 } */
-@media screen and (max-width: 800px) {
+/* @media screen and (max-width: 800px) {
   .card {
     width: calc(50% - 3rem);
   }
@@ -86,7 +86,7 @@ p.overview {
   .card {
     width: 100%;
   }
-}
+} */
 .front,
 .back {
   display: flex;
