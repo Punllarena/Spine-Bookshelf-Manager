@@ -51,7 +51,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <a class="navbar-brand" href="{{ url_for('home') }}">
-          <i class="fas fa-book"></i>
+          <img src="{{ url_for('static', filename='favicons/logo.png') }}" alt="Spine Logo" style="width: 40px; height: 40px;">
           Spine
       </a>
         <div class="collapse navbar-collapse" id="navbarExample">
@@ -62,7 +62,14 @@
             <li class="nav-item">
               <a class="nav-link {% if request.path == url_for('upcoming') %}active{% endif %}" aria-current="page" href="{{ url_for('upcoming') }}">Upcoming</a>
             </li>
-            
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">View Bookshelves</a>
+              <ul class="dropdown-menu">
+                {% for shelf in ['To Read', 'Currently Reading', 'Completed']  %}
+                <li><a class="dropdown-item" href="{{ url_for('shelf', tag=shelf, page_num=1) }}">{{ shelf }}</a></li>
+                {% endfor %}
+              </ul>
+            </li>
             
           </ul>
           <form class="d-flex" 
