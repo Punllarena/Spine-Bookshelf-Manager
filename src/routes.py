@@ -169,13 +169,15 @@ def upcoming():
 
 def full_shelf(page_num):
     query = db.session.query(Book).order_by(Book.series_id, Book.series_index).paginate(per_page = 20 ,page = page_num, error_out = True)
-    return render_template('fullshelf.html', books=query)
+    total_items = db.session.query(Book).count()
+    return render_template('fullshelf.html', books=query, total_items=total_items)
 
 def shelf(page_num, tag):
     if tag not in ["To Read", "Currently Reading", "Completed"]:
         tag = "To Read"
     shelf = db.session.query(Book).filter(Book.reading_tag == tag).order_by(Book.series_id, Book.series_index).paginate(per_page = 20 ,page = page_num, error_out = True)
-    return render_template('shelf.html', books=shelf, tag=tag)
+    total_items = db.session.query(Book).filter(Book.reading_tag == tag).count()
+    return render_template('shelf.html', books=shelf, tag=tag, total_items=total_items)
 
 def home():
     
