@@ -27,15 +27,17 @@ block content %}
           </a>
           <p class="card-text">{{ book.author }}</p>
           {# <p class="text-muted mb-0">{{book.reading_tag}}</p> #}
-          {% if book.series_id != "Is not a Series" %}
+        </div>
+        {% if book.series_id != "Is not a Series" %}
+        <div class="card-footer d-flex justify-content-between bg-light">
           <a
             class="btn btn-outline-primary"
             href=" {{ url_for('view_series', series_id=book.series_id) }} "
           >
             View Series
           </a>
-          {% endif %}
         </div>
+        {% endif %}
       </div>
     </div>
     {% endfor %}
