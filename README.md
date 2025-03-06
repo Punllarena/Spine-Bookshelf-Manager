@@ -35,56 +35,36 @@ app.run(host='0.0.0.0', port=5000)
 
 This will allow the container to listen on all interfaces
 
-Build the docker image
+Update the version within the `docker-compose.yml` file
 
-```bash
-docker build -t spine-bookshelf-manager .
+```yaml
+VERSION=vYYMMDD.rX
 ```
 
-To view the images
+YY = Year, MM = Month, DD = Day, X = Build Number
+
+Build the image
+
+Method 1
 
 ```bash
-docker images
+docker-compose build
 ```
 
-Create a Volume
+Run the container
 
 ```bash
-docker volume create spine-bookshelf-manager
+docker-compose up -d
 ```
 
-To run the container in the background with the volume attached
+To remove existing container(if it exists)
 
 ```bash
-docker run -d -p 5000:5000 -v spine-bookshelf-manager:/src/instance --name spine-bookshelf-manager spine-bookshelf-manager 
+docker-compose down
 ```
 
-To view if the container is currently running
+Method 2: Rebuild and Restart Container (if it exists)
 
 ```bash
-docker ps
-```
-
-To stop the container
-
-```bash
-docker stop spine-bookshelf-manager
-```
-
-To remove the container
-
-```bash
-docker rm spine-bookshelf-manager
-```
-
-To remove the image
-
-```bash
-docker rmi spine-bookshelf-manager
-```
-
-Remove all unused containers, networks, images (both dangling and unused), and optionally, volumes.
-
-```bash
-docker container prune
+docker-compose up --build -d
 ```

@@ -1,11 +1,22 @@
-version: "3.9"
+version: '3'
 
 services:
-  flask_app:
-    container_name: spine-bookshelf
-    image: spine-bookshelf-app:v2025.03.06.2
-    build: .
+  spine-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VERSION=vYYMMDD.rX
+        # YY - Year
+        # MM - Month
+        # DD - Day
+        # rX - Revision
+    container_name: spine-manager
     ports:
       - "5000:5000"
     volumes:
       - spine-data:/app/instance
+
+volumes:
+  spine-data:
+    external: true
