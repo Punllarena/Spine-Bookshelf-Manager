@@ -47,9 +47,10 @@ def check_latest_post():
 
     latest_post = soup.find_all("li", class_="post-summary")
 
-    print("[INFO] Checking for Manga / Light Novel / Book Releases post")
+    print("[INFO] Checking for Manga / Light Novel / Books Releases post")
     for post in latest_post:
-        if post.text.__contains__("Manga / Light Novel / Book Releases"):
+        print(post.text)
+        if post.text.__contains__("Manga / Light Novel / Books Releases") or post.text.__contains__("Manga / Light Novel / Book Releases"):
             print("[INFO] Manga / Light Novel / Book Releases post Found:")
             book_release_post = post.text
             book_release_link = post.a["href"]
@@ -106,7 +107,7 @@ def run_scraper(book_release_link = check_latest_post()):
             "Company": book_release_company,
             # "Link": book_release_link,
         }
-        if book_tag == "None" and "Irodori" not in book_release_company and book_release_type == "Light Novel":
+        if book_tag == "None" and "Irodori" not in book_release_company:
             if formatted_date not in book_info:
                 book_info[formatted_date] = []
             book_info[formatted_date].append(book_info_dict)
