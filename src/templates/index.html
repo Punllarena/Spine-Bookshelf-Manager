@@ -11,7 +11,7 @@ block content %}
     {% for key, books in books.items() %}
     {% if books != [] %}
     <section id="{{ key.lower().replace(' ', '') }}"></section>
-    <h2 class="heading">Latest in {{ key }}
+    <h2 class="heading">Latest in {{ key }} ({{ books|length }})
       <a href="{{ url_for('shelf', page_num = 1, tag = key) }}"
       class="btn btn-outline-primary"
       > See All</a>
