@@ -107,7 +107,7 @@ def run_scraper(book_release_link = check_latest_post()):
             "Company": book_release_company,
             # "Link": book_release_link,
         }
-        if book_tag == "None" and "Irodori" not in book_release_company:
+        if book_tag == "None" and "Irodori" not in book_release_company and book_release_type not in ["Manga", "Book", "Artbook"] and "Chapter" not in book_title:
             if formatted_date not in book_info:
                 book_info[formatted_date] = []
             book_info[formatted_date].append(book_info_dict)
