@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - VERSION=vYYMMDD.rX
+        - VERSION=v250308.r1
         # YY - Year
         # MM - Month
         # DD - Day
