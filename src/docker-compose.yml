@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   spine-manager:
     build:
@@ -11,7 +9,8 @@ services:
         # MM - Month
         # DD - Day
         # rX - Revision
-    container_name: spine-manager
+    container_name: spine-bookshelf-manager
+    image: spine-bookshelf-manager:${VERSION}
     ports:
       - "5000:5000"
     volumes:
