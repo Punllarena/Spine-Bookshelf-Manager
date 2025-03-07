@@ -25,19 +25,27 @@ block content %}
           <a href="{{url_for('volume_info', volume_id=book.g_volume_id)}}">
             <h6 class="card-title">{{book.title}}</h6>
           </a>
-          <p class="card-text">{{ book.author }}</p>
+          <p class="card-text"><i class="fas fa-pen-nib"></i> {{ book.author }}</p>
+          <p class"text-muted"><i class="fas fa-calendar"></i> {{ book.release_date }} </p>
           {# <p class="text-muted mb-0">{{book.reading_tag}}</p> #}
         </div>
-        {% if book.series_id != "Is not a Series" %}
         <div class="card-footer d-flex justify-content-between bg-light">
+          {% if book.series_id != "Is not a Series" %}
           <a
             class="btn btn-outline-primary"
             href=" {{ url_for('view_series', series_id=book.series_id) }} "
           >
             View Series
           </a>
+          {% endif %}
+          <a 
+            class="btn btn-outline-primary"
+            href="{{ url_for('edit', volume_id=book.g_volume_id) }}">
+            <i class="fas fa-edit"></i>
+          </a>
         </div>
-        {% endif %}
+        
+
       </div>
     </div>
     {% endfor %}
