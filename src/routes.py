@@ -5,6 +5,7 @@ from utils import clean_for_search_title, get_clean_description
 from models import Book, Upcoming, db
 from yattaUpcoming import run_scraper, check_latest_post
 import sqlalchemy
+from datetime import datetime
 
 
 def edit(volume_id):
@@ -14,6 +15,8 @@ def edit(volume_id):
         if book_in_db:
             for key, value in response.items():
                 setattr(book_in_db, key, value)
+            # book_in_db.updated_at = datetime.now().strftime("%Y-%m-%d")
+            # TODO Remove comment once Backup and Restore has been implemented
             db.session.commit()            
         return redirect(url_for('volume_info', volume_id = volume_id))
     elif book_in_db:
@@ -142,7 +145,9 @@ def add(volume_id: str, shelf:str):
         img_url=data['thumbnail'],  # Assuming 'thumbnail' holds the URL for the image
         reading_tag=shelf,
         g_volume_id=volume_id,
-        review = "No Data"
+        review = "No Data",
+        # created_at = datetime.now().strftime("%Y-%m-%d")
+        # TODO Remove comment once Backup and Restore has been implemented
     )
     # Add the new book to the database session and commit
     try:

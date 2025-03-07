@@ -46,6 +46,9 @@ class Book(Base):
     finish_date: Mapped[str] = mapped_column(String(10), nullable=True)
     hour_read: Mapped[int] = mapped_column(Integer, nullable=True)
     minutes_read: Mapped[int] = mapped_column(Integer, nullable=True)
+    # TODO add last_updated and created_at after backup and restore has been implemented
+    # last_updated: Mapped[str] = mapped_column(String(10), nullable=True)
+    # created_at: Mapped[str] = mapped_column(String(10), nullable=True)
     
 class Upcoming(Base):
     __tablename__ = "upcoming"
