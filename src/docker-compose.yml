@@ -1,14 +1,11 @@
+version: '3'
 services:
   spine-manager:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        - VERSION=vYYMMDD.rX
-        # YY - Year
-        # MM - Month
-        # DD - Day
-        # rX - Revision
+        - VERSION=${VERSION}
     container_name: spine-bookshelf-manager
     image: spine-bookshelf-manager:${VERSION}
     ports:
