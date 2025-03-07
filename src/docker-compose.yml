@@ -1,11 +1,10 @@
-version: "3.9"
 services:
   spine-manager:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        - VERSION=v250308.r1
+        - VERSION=vYYMMDD.rX
         # YY - Year
         # MM - Month
         # DD - Day
