@@ -12,6 +12,7 @@ services:
       - "5000:5000"
     volumes:
       - spine-data:/app/instance
+    restart: unless-stopped
 
 volumes:
   spine-data:
