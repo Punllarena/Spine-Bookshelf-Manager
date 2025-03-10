@@ -178,8 +178,9 @@ def add(volume_id: str, shelf:str):
 def timeline(year_month = datetime.now().strftime("%Y-%m")):
     year_month = request.args.get("year_month", year_month)
     db_data = db.session.query(Book).filter(Book.finish_date.startswith(year_month)).order_by(Book.finish_date.asc()).all()
-    
-    return render_template('timeline.html', books=db_data)
+    display_month = datetime.strptime(year_month, "%Y-%m").strftime("%B %Y") 
+    #example: "January 2023"
+    return render_template('timeline.html', books=db_data, display=display_month)
     
 
 def upcoming():
