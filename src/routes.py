@@ -17,9 +17,9 @@ def edit(volume_id):
                 setattr(book_in_db, key, value)
             # book_in_db.updated_at = datetime.now().strftime("%Y-%m-%d")
             # TODO Remove comment once Backup and Restore has been implemented
-            if response['reading_tag'] == "Completed":
+            if response['reading_tag'] == "Completed" and not book_in_db.finish_date:
                 book_in_db.finish_date = datetime.now().strftime("%Y-%m-%d")
-            if response['reading_tag'] == "Currently Reading":
+            if response['reading_tag'] == "Currently Reading" and not book_in_db.start_date:
                 book_in_db.start_date = datetime.now().strftime("%Y-%m-%d")
             db.session.commit()
         return redirect(url_for('volume_info', volume_id = volume_id))
@@ -177,8 +177,10 @@ def add(volume_id: str, shelf:str):
 
 def timeline(year_month = datetime.now().strftime("%Y-%m")):
     year_month = request.args.get("year_month", year_month)
-    db_data = db.session.query(Book).filter(Book.finish_date.startswith(year_month)).all()
+    db_data = db.session.query(Book).filter(Book.finish_date.startswith(year_month)).order_by(Book.finish_date.asc()).all()
+    
     return render_template('timeline.html', books=db_data)
+    
 
 def upcoming():
     book_release_link = check_latest_post()
