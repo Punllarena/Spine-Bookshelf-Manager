@@ -62,6 +62,9 @@
             <li class="nav-item">
               <a class="nav-link {% if request.path == url_for('upcoming') %}active{% endif %}" aria-current="page" href="{{ url_for('upcoming') }}">Upcoming</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.path == url_for('timeline') %}active{% endif %}" aria-current="page" href="{{ url_for('timeline') }}">History</a>
+            </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">View Bookshelves</a>
               <ul class="dropdown-menu">

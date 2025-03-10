@@ -17,7 +17,11 @@ def edit(volume_id):
                 setattr(book_in_db, key, value)
             # book_in_db.updated_at = datetime.now().strftime("%Y-%m-%d")
             # TODO Remove comment once Backup and Restore has been implemented
-            db.session.commit()            
+            if response['reading_tag'] == "Completed":
+                book_in_db.finish_date = datetime.now().strftime("%Y-%m-%d")
+            if response['reading_tag'] == "Currently Reading":
+                book_in_db.start_date = datetime.now().strftime("%Y-%m-%d")
+            db.session.commit()
         return redirect(url_for('volume_info', volume_id = volume_id))
     elif book_in_db:
         return render_template('edit.html', book=book_in_db)
@@ -104,6 +108,16 @@ def volume_info(volume_id):
     return render_template('volumeinfo.html', book=data, data_db=data_db)
 
 def view_series(series_id):
+    """
+    Renders a template displaying books in a series.
+
+    Args:
+        series_id (str): The ID of the series whose books are to be displayed.
+
+    Returns:
+        str: Rendered HTML of the series page with the books ordered by series index.
+    """
+
     books = db.session.query(Book).filter_by(series_id=series_id).order_by(Book.series_index.asc()).all()
     return render_template('series.html', books=books)
 
@@ -149,6 +163,10 @@ def add(volume_id: str, shelf:str):
         # created_at = datetime.now().strftime("%Y-%m-%d")
         # TODO Remove comment once Backup and Restore has been implemented
     )
+    if shelf == "Completed":
+        new_book.finish_date = datetime.now().strftime("%Y-%m-%d")
+    if shelf == "Currently Reading":
+        new_book.start_date = datetime.now().strftime("%Y-%m-%d")
     # Add the new book to the database session and commit
     try:
         db.session.add(new_book)
@@ -157,7 +175,10 @@ def add(volume_id: str, shelf:str):
         db.session.rollback()
     return redirect(url_for('volume_info', volume_id=volume_id))
 
-
+def timeline(year_month = datetime.now().strftime("%Y-%m")):
+    year_month = request.args.get("year_month", year_month)
+    db_data = db.session.query(Book).filter(Book.finish_date.startswith(year_month)).all()
+    return render_template('timeline.html', books=db_data)
 
 def upcoming():
     book_release_link = check_latest_post()

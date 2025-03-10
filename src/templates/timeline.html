@@ -1,0 +1,32 @@
+{% extends 'base.html' %} 
+{% block title %}Monthly Reading{% endblock %} 
+
+{%block content %}
+   <div class="container my-5">
+  <div class="row">
+    <div class="col-md-7 offset-md-2">
+      <h4 style="margin-left: 1.2rem;" class="heading">Monthly Reading History</h4>
+      <ul class="timeline-3">
+      {% for book in books %}
+        <li>
+        
+        <a href="#!">{{ book.title }} </a>
+        {% set month_names = {'01': 'January', '02': 'February', '03': 'March', '04': 'April', '05': 'May', '06': 'June', '07': 'July', '08': 'August', '09': 'September', '10': 'October', '11': 'November', '12': 'December'} %}
+        <p>
+        {% if  book.start_date %}
+        Started: 
+        <strong>{{ book.start_date.split('-')[2] }} {{ month_names[book.finish_date.split('-')[1]] }}, {{ book.start_date.split('-')[0] }}</strong> <br>
+        {% endif %}
+        Finished: 
+        <strong>{{ book.finish_date.split('-')[2] }} {{ month_names[book.finish_date.split('-')[1]] }}, {{ book.finish_date.split('-')[0] }}</strong>
+        </p>
+        </li>
+      
+      {% endfor %}
+      
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
+    
