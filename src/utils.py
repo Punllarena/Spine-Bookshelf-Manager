@@ -1,6 +1,7 @@
 import re
 import os
 from models import Book, db
+from datetime import datetime
 
 def restore_backup(file):
     print("[INFO] Restoring Backup")
@@ -20,6 +21,10 @@ def restore_backup(file):
                 print("[INFO] Book already exists, rolling back")
                 db.session.rollback()
                 continue
+            if data[16] == "No Data":
+                data[16] = datetime.now().strftime("%Y-%m-%d")
+            if data[15] == "No Data":
+                data[15] = datetime.now().strftime("%Y-%m-%d")
             book = Book(
                 title=data[0],
                 author=data[1],
