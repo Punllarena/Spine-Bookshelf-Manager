@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% from 'bootstrap5/form.html' import render_form %}
+{% block title %}Settings{% endblock %} {% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-md-12 col-sm-12">
+      <div class="card shadow-lg">
+        <div class="card-body">
+          <h3 class="mb-4 heading">Settings</h3>
+          
+          
+          <section id="backup">
+            <h4 class="heading">Backup</h4>
+            <a
+              href="{{url_for('settings', action="download_backup")}}"
+              class="btn btn-primary"
+            >
+              Backup</a
+            >
+          </section>
+          <section>
+            <h4 class="heading">Restore</h4>
+            <form method="POST" enctype="multipart/form-data">
+              {{ form.hidden_tag()}} {{ form.file() }} {{ form.submit() }}
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

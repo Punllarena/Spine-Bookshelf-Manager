@@ -1,12 +1,45 @@
-from flask import request, render_template, redirect, url_for
+from flask import request, render_template, redirect, url_for, send_file, after_this_request
 # from forms import editMovieForm, searchMovieForm
 import apirequest
-from utils import clean_for_search_title, get_clean_description
+from utils import clean_for_search_title, get_clean_description, download_backup, restore_backup
 from models import Book, Upcoming, db
 from yattaUpcoming import run_scraper, check_latest_post
 import sqlalchemy
+from forms import UploadBackupForm
 from datetime import datetime
+from werkzeug.utils import secure_filename
+import os
 
+def settings():
+    message = "None"
+    form = UploadBackupForm()
+    if request.method=='POST':
+        if form.validate_on_submit():
+            f = form.file.data
+            filename = secure_filename(f.filename)
+            upload_folder = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),'src','static', 'upload')
+            if not os.path.exists(upload_folder):
+                os.makedirs(upload_folder)
+            save_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),'src','static', 'upload', filename)
+            f.save(save_path)
+            message = restore_backup(save_path)
+            # message = "Backup restored successfully"
+            os.remove(save_path)
+            return redirect(url_for('settings'))
+    if request.args.get('action') == 'download_backup':
+        print("[INFO] Downloading Backup")
+        file_path = download_backup()
+        @after_this_request
+        def remove_file(response):
+            try:
+                print(f"Deleting file: {file_path}")
+                os.remove(file_path)
+            except OSError as e:
+                print(f"Error deleting file: {e}")
+            return response
+        message = "Backup downloaded successfully"
+        return send_file(file_path, as_attachment=True)
+    return render_template('settings.html', form=form, message=message)
 
 def edit(volume_id):
     book_in_db = db.session.query(Book).filter_by(g_volume_id=volume_id).first()
