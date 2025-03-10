@@ -59,23 +59,23 @@ def download_backup():
             
             # Clean and format fields to remove unnecessary whitespace
             fields = [
-                book.title.strip() if book.title else 'No Data',
-                book.author.strip() if book.author else 'No Data',
-                str(book.series_id).strip() if book.series_id else 'No Data',
-                str(book.series_index).strip() if book.series_index else 'No Data',
-                book.reading_tag.strip() if book.reading_tag else 'No Data',
-                str(book.release_date).strip() if book.release_date else 'No Data',
-                book.description.strip() if book.description else 'No Data',
-                str(book.rating).strip() if book.rating else 'No Data',
-                book.review.strip() if book.review else 'No Data',
-                book.img_url.strip() if book.img_url else 'No Data',
-                book.g_volume_id.strip() if book.g_volume_id else 'No Data',
-                str(book.start_date).strip() if book.start_date else 'No Data',
-                str(book.finish_date).strip() if book.finish_date else 'No Data',
-                str(book.hour_read).strip() if book.hour_read else 'No Data',
-                str(book.minutes_read).strip() if book.minutes_read else 'No Data',
-                str(created_at).strip(),
-                str(last_updated).strip()
+                book.title.strip().replace(";", ",") if book.title else 'No Data',
+                book.author.strip().replace(";", ",") if book.author else 'No Data',
+                str(book.series_id).strip().replace(";", ",") if book.series_id else 'No Data',
+                str(book.series_index).strip().replace(";", ",") if book.series_index else 'No Data',
+                book.reading_tag.strip().replace(";", ",") if book.reading_tag else 'No Data',
+                str(book.release_date).strip().replace(";", ",") if book.release_date else 'No Data',
+                book.description.strip().replace(";", ",") if book.description else 'No Data',
+                str(book.rating).strip().replace(";", ",") if book.rating else 'No Data',
+                book.review.strip().replace(";", ",") if book.review else 'No Data',
+                book.img_url.strip().replace(";", ",") if book.img_url else 'No Data',
+                book.g_volume_id.strip().replace(";", ",") if book.g_volume_id else 'No Data',
+                str(book.start_date).strip().replace(";", ",") if book.start_date else 'No Data',
+                str(book.finish_date).strip().replace(";", ",") if book.finish_date else 'No Data',
+                str(book.hour_read).strip().replace(";", ",") if book.hour_read else 'No Data',
+                str(book.minutes_read).strip().replace(";", ",") if book.minutes_read else 'No Data',
+                str(created_at).strip().replace(";", ","),
+                str(last_updated).strip().replace(";", ",")
             ]
             
             f.write(";".join(fields) + "\n")
