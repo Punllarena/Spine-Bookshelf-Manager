@@ -22,9 +22,9 @@ def restore_backup(file):
                 db.session.rollback()
                 continue
             if data[16] == "No Data":
-                data[16] = datetime.now().strftime("%Y-%m-%d")
+                data[16] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             if data[15] == "No Data":
-                data[15] = datetime.now().strftime("%Y-%m-%d")
+                data[15] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             book = Book(
                 title=data[0],
                 author=data[1],

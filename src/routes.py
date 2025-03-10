@@ -48,7 +48,7 @@ def edit(volume_id):
         if book_in_db:
             for key, value in response.items():
                 setattr(book_in_db, key, value)
-            # book_in_db.updated_at = datetime.now().strftime("%Y-%m-%d")
+            book_in_db.last_updated = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             # TODO Remove comment once Backup and Restore has been implemented
             if response['reading_tag'] == "Completed" and not book_in_db.finish_date:
                 book_in_db.finish_date = datetime.now().strftime("%Y-%m-%d")
@@ -193,8 +193,9 @@ def add(volume_id: str, shelf:str):
         reading_tag=shelf,
         g_volume_id=volume_id,
         review = "No Data",
-        # created_at = datetime.now().strftime("%Y-%m-%d")
-        # TODO Remove comment once Backup and Restore has been implemented
+        created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        
     )
     if shelf == "Completed":
         new_book.finish_date = datetime.now().strftime("%Y-%m-%d")
@@ -250,20 +251,20 @@ def home():
                                 sqlalchemy.func.min(Book.series_index).label('min_index'),
                                 sqlalchemy.func.max(Book.series_index).label('max_index')).group_by(Book.series_id).subquery()
     
-    reading_books = db.session.query(Book).filter(Book.reading_tag == "Currently Reading").all()
+    reading_books = db.session.query(Book).filter(Book.reading_tag == "Currently Reading").order_by(Book.last_updated.desc()).all()
     
     to_read_books = db.session.query(Book).outerjoin(subquery, 
                                                     (Book.series_id == subquery.c.series_id) & (Book.series_index == subquery.c.min_index)
                                         ).filter(
                                             (subquery.c.min_index == None) | 
                                             (Book.series_index == subquery.c.min_index)
-                                        ).filter(Book.reading_tag == "To Read").order_by(Book.id.desc()).limit(4).all()
+                                        ).filter(Book.reading_tag == "To Read").order_by(Book.last_updated.desc()).limit(4).all()
     completed_books = db.session.query(Book).outerjoin(subquery, 
                                                     (Book.series_id == subquery.c.series_id) & (Book.series_index == subquery.c.max_index)
                                         ).filter(
                                             (subquery.c.max_index == None) | 
                                             (Book.series_index == subquery.c.max_index)
-                                        ).filter(Book.reading_tag == "Completed").order_by(Book.id.desc()).limit(4).all()
+                                        ).filter(Book.reading_tag == "Completed").order_by(Book.last_updated.desc()).limit(4).all()
     
     all_books = {"Currently Reading": reading_books, "To read": to_read_books, "Completed": completed_books}
     return render_template('index.html', books = all_books)
