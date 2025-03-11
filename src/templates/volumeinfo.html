@@ -1,21 +1,30 @@
 {% extends 'base.html' %} {% block title %}{{book['title']}}{% endblock %} {%
 block content %}
 <div class="container">
-  <h1 class="heading">Book Info</h1>
+  <h1 class="heading">{{book['title']}}</h1>
+  <h4 class="mx-3">
+          <span class="badge {{ data_db['reading_badge'] }}">
+            {{ data_db['reading_status'] }}
+            </span>
+          {# 
+          {% if data_db['rating'] != None and data_db['rating'] != "None" %}
+          <span class="text-muted">Rating: {{ data_db['rating'] }}</span>
+          {% endif %} #}
+        </h4>
   <br />
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     rel="stylesheet"
   />
 
-  <div class="container py-2">
+  <div class="container">
     <div class="row">
       <!-- Product Images -->
 
-      <div class="col-md-2 mb-4">
+      <div class="col-md-4 col-lg-3 col-xl-2 col-sm-3 col-xs-2 card-container">
         <a href="{{ book['largeImage'] }}" target="_blank">
           <img
-            class="img-fluid"
+            class="img-fluid mx-2"
             src=" {{ book['thumbnail'] }} "
             alt="Click Image for Large Cover"
           />
@@ -23,46 +32,9 @@ block content %}
       </div>
 
       <!-- Book Details -->
-      <div class="col-md-10 card-container">
-        <h1 class="h2 mb-2">{{book['title']}}</h1>
-        <h5>
-          <span class="badge {{ data_db['reading_badge'] }}">
-            {{ data_db['reading_status'] }}
-          </span>
-          {% if data_db['rating'] != None and data_db['rating'] != "None" %}
-          <span class="text-muted">Rating: {{ data_db['rating'] }}</span>
-          {% endif %}
-        </h5>
-
-        {% if data_db['hour_read'] == "No Data" or data_db['minutes_read' == "No
-        Data"] or data_db['hour_read']== "" or data_db['minutes_read']== ""%}
-
-        <span class="text-muted mb-2">No Reading Data Yet</span>
-
-        {% else %}
-
-        <span class="text-muted mb-2"
-          >Read Time: {{ data_db['hour_read'] }} Hours {{
-          data_db['minutes_read'] }} Minutes |</span
-        >
-        {% endif %} {% if data_db['start_date'] != "No Data" and
-        data_db['start_date'] != "" %}
-
-        <span class="text-muted mb-2">
-          Started: {{ data_db['start_date'] }} |
-        </span>
-
-        {% endif %} {% if data_db['finish_date'] != "No Data" and
-        data_db['finish_date'] != "" %}
-
-        <span class="text-muted mb-2">
-          Finished: {{data_db['finish_date']}}
-        </span>
-
-        {% endif %}
-
-        <div class="mb-2 d-flex align-items-center">
-          <span class="text-muted me-2">Author: </span>
+      <div class="col-md-4 col-lg-3 col-xl-3 col-sm-4 col-xs-5 card-container">
+        <div class="mb-2 align-items-center">
+          <span class="text-muted mx-2"><i class="fas fa-pen-nib"></i> Author: </span>
           <form action="{{ url_for('search', page =1) }}" method="POST">
             <input type="hidden" name="query" value="{{ book.author }}" />
             <button type="submit" class="btn btn-outline-primary btn-sm">
@@ -70,7 +42,7 @@ block content %}
               <i class="fas fa-search"></i>
             </button>
           </form>
-          <span class="text-muted mx-2">Publisher: </span>
+          <span class="text-muted mx-2"><i class="fas fa-building"></i> Publisher: </span>
           <form action="{{ url_for('search', page =1) }}" method="POST">
             <input type="hidden" name="query" value="{{ book.publisher }}" />
             <button type="submit" class="btn btn-outline-primary btn-sm">
@@ -78,22 +50,42 @@ block content %}
               <i class="fas fa-search"></i>
             </button>
           </form>
-        </div>
-        <span class="text-muted mb-2"
-          >Released: {{ book['publishedDate'] }}</span
-        >
-        <br />
-        {% if data_db['series_id'] != "Is not a Series" %}
+          {% if data_db['series_id'] != "Is not a Series" %}
         <a
           href="{{ url_for('view_series', series_id=data_db['series_id']) }}"
-          class="btn btn-outline-primary btn-sm"
-          >View Series</a
+          class="btn btn-outline-primary btn-sm my-2"
+          >View Series 
+          <i class="fas fa-book-open"></i></a
         >
         {% endif %}
+        </div>
       </div>
+      <div class="col-md-4 col-lg-3 col-xl-3 col-sm-5 col-xs-5 card-container">
+      <span class="text-muted mb-2"><i class="fas fa-calendar"></i> Dates</span>
+        <p class="text-muted mb-2"
+          ><i class="fas fa-calendar-day"></i> Published: {{ book['publishedDate'] }}</p
+        >
+        {% if data_db['start_date'] != "No Data" and
+        data_db['start_date'] != "" and data_db['start_date'] != None %}
 
-      <h2 class="heading mb-2">Synopsis:</h2>
-      <p class="mb-4">{{ book['description'] }}</p>
+        <p class="text-muted mb-2">
+        <i class="fas fa-calendar-plus"></i> Started: {{ data_db['start_date'] }}
+        </p>
+
+        {% endif %} 
+        {% if data_db['finish_date'] != "No Data" and
+        data_db['finish_date'] != ""  and data_db['finish_date'] != None%}
+
+        <p class="text-muted mb-2">
+        <i class="fas fa-calendar-check"></i> Finished: {{data_db['finish_date']}}
+        </p>
+
+        {% endif %}
+      </div>
+      
+
+      <h2 class="heading my-2">Synopsis:</h2>
+      <p class="mb-4 mx-2">{{ book['description'] }}</p>
       {% if data_db['review'] == "No Data" or data_db['review'] == "" or
       data_db['review'] == "No Review Yet"%} {% else %}
       <h2 class="heading mb-2">Review:</h2>

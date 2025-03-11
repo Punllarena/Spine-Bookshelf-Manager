@@ -51,9 +51,9 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <a class="navbar-brand" href="{{ url_for('home') }}">
-          <img src="{{ url_for('static', filename='favicons/logo.png') }}" alt="Spine Logo" style="width: 40px; height: 40px;">
+          <img src="{{ url_for('static', filename='favicons/logo.png') }}" alt="Spine" style="width: 40px; height: 40px;">
           Spine
-      </a>
+        </a>
         <div class="collapse navbar-collapse" id="navbarExample">
           <ul class="navbar-nav me-auto mb-0">
             <li class="nav-item">
@@ -74,11 +74,20 @@
                 {% endfor %}
               </ul>
             </li>
+            <li>
+
+              <a href="https://github.com/Punllarena/Spine-Bookshelf-Manager" class="btn button-primary" title="Github repository">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="{{ url_for('settings') }}" class="btn button-primary" title="Settings">
+                <i class="fas fa-cog"></i>
+              </a>
+            </li>
             
           </ul>
-          <form class="d-flex" 
-          role="search" 
-          action="{{ url_for('search') }}"
+            <form class="d-flex" 
+            role="search" 
+            action="{{ url_for('search') }}"
           method="POST">
             <input class="form-control me-2" 
             name="query"
@@ -90,15 +99,11 @@
               <i class="fas fa-search"></i>
             </button>
           </form>
-            
+          
           </div>
-          <a href="https://github.com/Punllarena/Spine-Bookshelf-Manager" class="btn button-primary" title="Github repository">
-            <i class="fab fa-github"></i>
-          </a>
-          <a href="{{ url_for('settings') }}" class="btn button-primary" title="Settings">
-            <i class="fas fa-cog"></i>
-          </a>
+          
         </div>
+        
       </div>
     </nav>
     {% block content %}{% endblock %}
