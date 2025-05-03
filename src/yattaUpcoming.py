@@ -118,3 +118,9 @@ def run_scraper(book_release_link = check_latest_post()):
 # import json
 # with(open("./jsonresults/upcoming.json", "w")) as f:
 #     json.dump(data, f)
+
+if __name__ == "__main__":
+    data = run_scraper()
+    # import json
+    # with(open("./jsonresults/upcoming.json", "w")) as f:
+    #     json.dump(data, f)
