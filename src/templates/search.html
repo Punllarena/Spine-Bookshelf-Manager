@@ -41,7 +41,6 @@ endblock %} {% block content %}
       <tr>
         <th scope="col-2">Thumbnail</th>
         <th scope="col-6">Title</th>
-        <th scope="col-2">Author</th>
         <th scope="col-1">Actions</th>
       </tr>
     </thead>
@@ -50,20 +49,15 @@ endblock %} {% block content %}
       <tr>
         <th scope="row" class="col-2">
           <img
-            src="{{ book['volumeInfo'].get('imageLinks', {}).get('thumbnail', 'https://placehold.co/139x203') }}"
+            src="{{ book.get('image_url', 'https://placehold.co/139x203') }}"
             alt=""
             class="img-thumbnail"
           />
         </th>
         <td class="col-6">
           <a href="{{ url_for('volume_info', volume_id=book['id']) }}">
-            {{ book['volumeInfo']['title'] }}
+            {{ book['title'] }}
           </a>
-        </td>
-        <td class="col-2">
-          {% for author in book['volumeInfo']['authors'] %}
-          <p>{{ author }}</p>
-          {% endfor %}
         </td>
         <td class="col-1">
           <div class="dropdown">

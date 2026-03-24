@@ -1,50 +1,60 @@
 import requests
-import os
-from dotenv import load_dotenv
+import calendar
 
-load_dotenv
-
-api_key = os.getenv('BOOKS_API_KEY')
-
-query = ""
-volume_id = ""
-startIndex = 0 # Starts at 0, counts each item in the list
-maxResults = 10
-params = {
-    "q": query,
-    "key": api_key,
-    "startIndex": startIndex,
-    "maxResults": maxResults, 
-    "projection": "lite", 
-    # "langRestrict": "en",
-}
-
-# Define your API key and base URL
-search_url = f"https://www.googleapis.com/books/v1/volumes"
-
-
+BASE_URL = "https://ranobedb.org/api/v0"
+IMAGE_BASE_URL = "https://images.ranobedb.org/"
+LIMIT = 10
 
 
 def search_volume(query, page=1):
-    params['q'] = query
-    params['startIndex'] = (page-1) * 10 # Starts at 0, counts each item in the list
-    response = requests.get(search_url, params = params)
+    params = {
+        "q": query,
+        "rl": "en",
+        "limit": LIMIT,
+        "page": page,
+    }
+    response = requests.get(f"{BASE_URL}/books", params=params)
     response.raise_for_status()
-    if response.status_code == 200:
-        data = response.json()
-        pagination = data['totalItems']//maxResults
-        data['pagination'] = pagination
-        # print(data)
-        return data
-    else:
-        print("Error:", response.status_code)
-        return None
-    
+    data = response.json()
+    for book in data.get("books", []):
+        image = book.get("image")
+        if image and image.get("filename"):
+            book["image_url"] = f"{IMAGE_BASE_URL}{image['filename']}"
+        else:
+            book["image_url"] = "https://placehold.co/139x203"
+    data["pagination"] = data.get("totalPages", 1)
+    return data
+
+
 def get_volume(volume_id):
-    response = requests.get(f"https://www.googleapis.com/books/v1/volumes/{volume_id}")
+    response = requests.get(f"{BASE_URL}/book/{volume_id}")
     response.raise_for_status()
-    if response.status_code == 200:
-        data = response.json()
-        return data
-    else:
-        return None
+    return response.json()["book"]
+
+
+def get_series(series_id):
+    response = requests.get(f"{BASE_URL}/series/{series_id}")
+    response.raise_for_status()
+    return response.json()["series"]
+
+
+def get_releases(year_month):
+    """Fetch English releases for a given month. year_month = 'YYYY-MM'"""
+    year, month = map(int, year_month.split('-'))
+    last_day = calendar.monthrange(year, month)[1]
+    params = {
+        "lang": "en",
+        "minDate": f"{year_month}-01",
+        "maxDate": f"{year_month}-{last_day:02d}",
+        "limit": 100,
+        "sort": "Release date asc",
+    }
+    response = requests.get(f"{BASE_URL}/releases", params=params)
+    response.raise_for_status()
+    releases = response.json().get("releases", [])
+    for r in releases:
+        image = r.get("image")
+        r["image_url"] = f"{IMAGE_BASE_URL}{image['filename']}" if image and image.get("filename") else "https://placehold.co/139x203"
+        s = str(r["release_date"])
+        r["release_date_str"] = f"{s[:4]}-{s[4:6]}-{s[6:]}"
+    return releases

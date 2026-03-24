@@ -3,10 +3,10 @@ from flask import request, render_template, redirect, url_for, send_file, after_
 import apirequest
 from utils import clean_for_search_title, get_clean_description, download_backup, restore_backup
 from models import Book, Upcoming, db
-from yattaUpcoming import run_scraper, check_latest_post
 import sqlalchemy
 from forms import UploadBackupForm
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from werkzeug.utils import secure_filename
 import os
 
@@ -69,45 +69,71 @@ def delete(volume_id):
     return redirect(url_for('volume_info', volume_id = volume_id))
 
 def get_volume_info(volume_id):
-    response = apirequest.get_volume(volume_id)
-    clean_description = get_clean_description(response['volumeInfo']['description'])
-    
-    try:
-        imageLargeLink = response['volumeInfo']['imageLinks']['large']
-        thumbnail = response['volumeInfo']['imageLinks']['thumbnail']
-    except KeyError:
-        imageLargeLink = response['volumeInfo'].get('imageLinks', 'https://placehold.co/800x1200')
-        thumbnail = response['volumeInfo'].get('imageLinks', 'https://placehold.co/139x203')
-    if isinstance(thumbnail, str):
-        thumbnail = thumbnail
-    elif isinstance(thumbnail, dict):
-        thumbnail = list(thumbnail.values())[-1]
-    if isinstance(imageLargeLink, str):
-        imageLargeLink = imageLargeLink
-    elif isinstance(imageLargeLink, dict):
-        imageLargeLink = list(imageLargeLink.values())[-1]
+    book = apirequest.get_volume(volume_id)
 
-    data = {
+    # Image (thumbnail and large are the same in RanobeDB)
+    image = book.get('image')
+    if image and image.get('filename'):
+        image_url = f"https://images.ranobedb.org/{image['filename']}"
+    else:
+        image_url = 'https://placehold.co/139x203'
+
+    # Author: from original edition (eid=0 / lang=null), prefer romaji
+    author = "Unknown"
+    for edition in book.get('editions', []):
+        if edition.get('eid') == 0 or edition.get('lang') is None:
+            for staff in edition.get('staff', []):
+                if staff['role_type'] == 'author':
+                    author = staff.get('romaji') or staff['name']
+                    break
+            break
+
+    # Publisher: prefer EN publisher, fallback to first
+    publisher = "Unknown"
+    for p in book.get('publishers', []):
+        if p.get('lang') == 'en' and p.get('publisher_type') == 'publisher':
+            publisher = p['name']
+            break
+    if publisher == "Unknown" and book.get('publishers'):
+        publisher = book['publishers'][0]['name']
+
+    # Release date: prefer EN, convert YYYYMMDD int to "YYYY-MM-DD"
+    raw_date = book.get('c_release_dates', {}).get('en') or book.get('c_release_date')
+    if raw_date:
+        s = str(raw_date)
+        publishedDate = f"{s[:4]}-{s[4:6]}-{s[6:]}"
+    else:
+        publishedDate = "Unknown"
+
+    clean_description = get_clean_description(book.get('description', ''))
+
+    # Series info
+    series_info = book.get('series')
+    if series_info and series_info.get('id'):
+        series_id = series_info['id']
+        series_data = apirequest.get_series(series_id)
+        series_index = 0
+        for b in series_data.get('books', []):
+            if b['id'] == int(volume_id):
+                series_index = b.get('sort_order', 0)
+                break
+    else:
+        series_id = "Is not a Series"
+        series_index = 0
+
+    return {
         "volume_id": volume_id,
-        "title": response['volumeInfo']['title'],
-        "thumbnail" : thumbnail,
-        "largeImage": imageLargeLink,
-        "author": response['volumeInfo']['authors'][0], 
-        "publishedDate": response['volumeInfo']['publishedDate'], 
+        "title": book['title'],
+        "thumbnail": image_url,
+        "largeImage": image_url,
+        "author": author,
+        "publishedDate": publishedDate,
         "description": clean_description,
-        "publisher": response['volumeInfo']['publisher'], 
-        "searchTitle": clean_for_search_title(response['volumeInfo']['title']),
+        "publisher": publisher,
+        "searchTitle": clean_for_search_title(book['title']),
+        "seriesId": series_id,
+        "seriesIndex": series_index,
     }
-    try:
-        volumeSeries = response['volumeInfo']['seriesInfo']['volumeSeries'][0]
-        data['seriesId'] = volumeSeries['seriesId']
-        data['seriesIndex'] = volumeSeries['orderNumber']
-    except:
-        data['seriesId'] = "Is not a Series"
-        data['seriesIndex'] = 0
-    # print(data)
-    
-    return data
 def get_reading_badge(reading_status):
     reading_badge = "bg-"+ reading_status.replace(" ", "").lower()
     return reading_badge
@@ -161,10 +187,7 @@ def search(page=1):
             query = "Book Spine"
         page = int(request.args.get('page', page))
         data = apirequest.search_volume(query, page)
-        try: 
-            books = data['items']
-        except:
-            books = "No Results"
+        books = data.get('books') or "No Results"
     return render_template('search.html',
                         books=books, 
                         searchQuery=query, 
@@ -218,17 +241,33 @@ def timeline(year_month = datetime.now().strftime("%Y-%m")):
     
 
 def upcoming():
-    book_release_link = check_latest_post()
-    db_data = db.session.query(Upcoming).filter_by(release_link=book_release_link).first()
-    
+    year_month = request.args.get("year_month", datetime.now().strftime("%Y-%m"))
+    current = datetime.strptime(year_month, "%Y-%m")
+    prev_month = (current - relativedelta(months=1)).strftime("%Y-%m")
+    next_month = (current + relativedelta(months=1)).strftime("%Y-%m")
+    display_month = current.strftime("%B %Y")
+
+    cache_key = f"ranobedb:{year_month}"
+    db_data = db.session.query(Upcoming).filter_by(release_link=cache_key).first()
+
     if db_data:
-        upcoming_books = db_data.data_dict
+        releases = db_data.data_dict
     else:
-        upcoming_books = run_scraper()
-        db.session.query(Upcoming).filter(Upcoming.release_link != book_release_link).delete(synchronize_session=False)
-        db.session.add(Upcoming(release_link=book_release_link, data_dict=upcoming_books))
+        releases = apirequest.get_releases(year_month)
+        db.session.add(Upcoming(release_link=cache_key, data_dict=releases))
         db.session.commit()
-    return render_template('upcoming.html', books=upcoming_books)
+
+    releases_by_date = {}
+    for r in releases:
+        date = r.get("release_date_str", "Unknown")
+        releases_by_date.setdefault(date, []).append(r)
+
+    return render_template('upcoming.html',
+                           books=releases_by_date,
+                           display_month=display_month,
+                           year_month=year_month,
+                           prev_month=prev_month,
+                           next_month=next_month)
 
 def full_shelf(page_num):
     query = db.session.query(Book).order_by(Book.series_id, Book.series_index).paginate(per_page = 20 ,page = page_num, error_out = True)
